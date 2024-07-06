@@ -17,7 +17,11 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/fuse",
+                        "outputPath": {
+                            "base": "dist/fuse",
+                            "browser": "",
+                            "server": "node-server"
+                        },
                         "index": "src/index.html",
                         "browser": "src/main.ts",
                         "polyfills": ["zone.js"],
