@@ -23,7 +23,7 @@ jobs:
             - name: Build
               run: |
                   npm install
-                  npm run build
+                  npm run deploy-with-bhref
             - uses: onekiloparsec/heroku-node-deploy-subfolder@v1.1.0
               with:
                   api_key: ${{secrets.HEROKU_API_KEY}}
