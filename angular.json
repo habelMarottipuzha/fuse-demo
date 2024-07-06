@@ -18,7 +18,7 @@
                     "builder": "@angular-devkit/build-angular:application",
                     "options": {
                         "outputPath": {
-                            "base": "dist/fuse",
+                            "base": "dist",
                             "browser": "",
                             "server": "node-server"
                         },
