@@ -20,6 +20,7 @@ import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader';
 
 export const appConfig: ApplicationConfig = {
     providers: [
+        
         provideAnimations(),
         provideHttpClient(),
         provideRouter(

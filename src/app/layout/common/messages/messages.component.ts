@@ -69,7 +69,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((messages: Message[]) => {
                 // Load the messages
-                this.messages = messages;
+                this.messages = [] //messages;
 
                 // Calculate the unread count
                 this._calculateUnreadCount();
