@@ -1,5 +1,11 @@
 export enum PostTypeEnum {
     TEXT = 'TEXT',
-    EMBEDDED_YOUTUBE = 'EMBEDDED_YOUTUBE',
-    IMAGE = 'IMAGE'
+    IMAGE = 'IMAGE',
+    VIDEO_EMBED = 'VIDEO_EMBED',
+    DOC = 'DOC'
+}
+
+export enum PostVisibilityEnum {
+    PUBLIC = "PUBLIC",
+    PRIVATE = "PRIVATE"
 }

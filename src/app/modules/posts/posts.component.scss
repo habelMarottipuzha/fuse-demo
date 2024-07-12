@@ -1,0 +1,19 @@
+posts fuse-card {
+    margin: 16px;
+}
+
+.wrapper {
+    border: 1px solid #ddd;
+}
+.selected-images {
+    border-radius: 5px;
+    margin: 5px;
+
+    button {
+        position: absolute;
+        right: 5px;
+        color: #363636;
+        background-color: #c3c3c3;
+        top: 5px;
+    }
+}

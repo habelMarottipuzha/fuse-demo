@@ -1,6 +1,7 @@
 import {
     AfterViewInit,
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     QueryList,
@@ -13,36 +14,14 @@ import { MaterialModule } from 'app/shared/material.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { PostService } from './post.service';
 import { catchError, of } from 'rxjs';
-import { PostTypeEnum } from 'app/modal/post/post-enum';
+import { PostTypeEnum, PostVisibilityEnum } from 'app/modal/post/post-enum';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CreatePostDto } from 'app/modal/post/create-post.dto';
 
 @Component({
     selector: 'posts',
     templateUrl: './posts.component.html',
-    styles: [
-        `
-            posts fuse-card {
-                margin: 16px;
-            }
-
-            .wrapper {
-    border: 1px solid #ddd;
-}
-.selected-images {
-    border-radius: 5px;
-    margin: 5px;
-
-    button {
-        position: absolute;
-        right: 5px;
-        color: #363636;
-        background-color: #c3c3c3;
-        top: 5px;
-    }
-}
-
-        `
-    ],
+    styleUrl: './posts.component.scss',
     standalone: true,
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,12 +44,16 @@ export class PostsComponent implements AfterViewInit {
 
     @ViewChildren(FuseCardComponent, { read: ElementRef }) private _fusePosts: QueryList<ElementRef>;
 
-    public get postTypeEnum(): PostTypeEnum {
-        return
+    public get getVisibilityEnum(): typeof PostVisibilityEnum {
+        return PostVisibilityEnum;
+    }
+
+    public get getVisibility(): PostVisibilityEnum {
+        return this.createPostForm.get('visibility').value || PostVisibilityEnum.PUBLIC;
     }
 
     public get images(): string[] {
-        return [...this.fileListASDataUrl]
+        return this.fileListASDataUrl
     }
 
     /**
@@ -78,14 +61,15 @@ export class PostsComponent implements AfterViewInit {
      */
     constructor(
         private _renderer2: Renderer2,
-        private _postService: PostService
+        private _postService: PostService,
+        private _cdRef: ChangeDetectorRef
     ) {
         this.createPostForm = new FormGroup({
             title: new FormControl(''),
             content: new FormControl('', [Validators.required]),
             contentUrls: new FormControl([]),
             type: new FormControl(PostTypeEnum.TEXT),
-            visibility: new FormControl('PUBLIC'),
+            visibility: new FormControl(PostVisibilityEnum.PUBLIC),
             pinned: new FormControl(true),
             metadata: new FormGroup({
                 tags: new FormControl([]),
@@ -122,9 +106,24 @@ export class PostsComponent implements AfterViewInit {
         this._postService.createPost({} as any)
     }
 
-    public uploadFile(event) {
-        this.fileList.push(event?.target?.files[0]);
-        this._setImageAsDataUrl();
+    public addFile(event) {
+        const file = event?.target?.files[0];
+        this.fileList.push(file);
+        const fileIndex = this.fileList.length - 1;
+        const mimeType = this.fileList[fileIndex].type;
+        if (mimeType.match(/image\/*/) == null) {
+            alert("Only image files are supported")
+            // this.fileListASDataUrl[index] = "Only images are supported.";
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.readAsDataURL(this.fileList[fileIndex]);
+        reader.onload = () => {
+            this.fileListASDataUrl.push(reader.result)
+            console.log(this.fileListASDataUrl);
+            this._cdRef.markForCheck()
+        }
         this.imageFile = null;
     }
 
@@ -144,14 +143,16 @@ export class PostsComponent implements AfterViewInit {
 
             const mimeType = this.fileList[index].type;
             if (mimeType.match(/image\/*/) == null) {
-                this.fileListASDataUrl[index] = "Only images are supported.";
+                alert("Only image files are supported")
+                // this.fileListASDataUrl[index] = "Only images are supported.";
                 return;
             }
 
             const reader = new FileReader();
             reader.readAsDataURL(this.fileList[index]);
             reader.onload = () => {
-                this.fileListASDataUrl[index] = reader.result;
+                this.fileListASDataUrl.push(reader.result);
+                this._cdRef.markForCheck();
             }
         }
     }
