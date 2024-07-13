@@ -1,9 +1,7 @@
 name: Deploy Heroku
 
 on:
-    push:
-        branches:
-            - develop
+    workflow_dispatch:
 
 jobs:
     build:
@@ -25,11 +23,11 @@ jobs:
             - name: Build
               run: |
                   npm install
-                  npm run-script deploy
+                  npm run deploy-with-bhref
             - uses: onekiloparsec/heroku-node-deploy-subfolder@v1.1.0
               with:
                   api_key: ${{secrets.HEROKU_API_KEY}}
-                  email: "kochumarotti@gmail.com"
+                  email: "x@gmail.com"
                   app_name: "socio-demo"
                   heroku_branch: "master"
                   subfolder: "dist"
