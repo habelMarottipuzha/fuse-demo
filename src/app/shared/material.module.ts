@@ -13,7 +13,8 @@ import { MatTableModule } from "@angular/material/table";
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from "@angular/material/sidenav";
 import { MatSelectModule } from "@angular/material/select";
-
+import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog";
+import {MatBadgeModule} from '@angular/material/badge';
 const modules = [
     // CDK
     ScrollingModule,
@@ -36,7 +37,16 @@ const modules = [
     // Drawer
     MatDrawer,
     MatDrawerContainer,
-    MatDrawerContent
+    MatDrawerContent,
+
+    // DIALOG
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+
+    // BADGE
+    MatBadgeModule
 ]
 
 @NgModule({

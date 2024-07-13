@@ -13,6 +13,6 @@ export class UrlService {
     }
 
     private static _baseUrl(): string {
-        return 'http://ec2-18-208-225-72.compute-1.amazonaws.com:8500/api'
+        return 'http://ec2-54-242-152-107.compute-1.amazonaws.com:8500'
     }
 }

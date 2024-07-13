@@ -13,10 +13,12 @@ import { FuseCardComponent } from '@fuse/components/card';
 import { MaterialModule } from 'app/shared/material.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { PostService } from './post.service';
-import { catchError, of } from 'rxjs';
+import { catchError, firstValueFrom, of } from 'rxjs';
 import { PostTypeEnum, PostVisibilityEnum } from 'app/modal/post/post-enum';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CreatePostDto } from 'app/modal/post/create-post.dto';
+import { CreatePostDto, Url } from 'app/modal/post/create-post.dto';
+import { MatDialog } from '@angular/material/dialog';
+import { YoutubeLinkComponent } from './youtube-link-popup/youtube-link.component';
 
 @Component({
     selector: 'posts',
@@ -30,6 +32,7 @@ import { CreatePostDto } from 'app/modal/post/create-post.dto';
         SharedModule,
         MaterialModule,
         FuseCardComponent,
+        YoutubeLinkComponent
     ],
     providers: [PostService]
 })
@@ -41,6 +44,10 @@ export class PostsComponent implements AfterViewInit {
     imageFile = null;
     fileList: File[] = [];
     fileListASDataUrl: any[] = [];
+
+    viewHelper = {
+        submitting: false
+    }
 
     @ViewChildren(FuseCardComponent, { read: ElementRef }) private _fusePosts: QueryList<ElementRef>;
 
@@ -56,19 +63,24 @@ export class PostsComponent implements AfterViewInit {
         return this.fileListASDataUrl
     }
 
+    public get youtubeUrl(): number {
+        const v: Url[] = this.createPostForm.get('urls').value || [];
+        return v.filter(x => x.type = PostTypeEnum.VIDEO_EMBED)?.length;
+    }
+
     /**
      * Constructor
      */
     constructor(
         private _renderer2: Renderer2,
         private _postService: PostService,
-        private _cdRef: ChangeDetectorRef
+        private _cdRef: ChangeDetectorRef,
+        private _dialog: MatDialog
     ) {
         this.createPostForm = new FormGroup({
             title: new FormControl(''),
             content: new FormControl('', [Validators.required]),
-            contentUrls: new FormControl([]),
-            type: new FormControl(PostTypeEnum.TEXT),
+            urls: new FormControl([]),
             visibility: new FormControl(PostVisibilityEnum.PUBLIC),
             pinned: new FormControl(true),
             metadata: new FormGroup({
@@ -102,8 +114,31 @@ export class PostsComponent implements AfterViewInit {
     // -----------------------------------------------------------------------------------------------------
 
     public createPost() {
-        console.log(this.createPostForm.value);
-        this._postService.createPost({} as any)
+        const isValid = this.createPostForm.valid;
+        if (isValid) {
+            this.viewHelper.submitting = true;
+            firstValueFrom(this._postService.createPost(this.createPostForm.value))
+                .finally(() => {
+                    this.viewHelper.submitting = false;
+                    this._cdRef.markForCheck();
+                });
+        } else {
+            console.log("ERROR");
+        }
+
+    }
+
+    public enterYoutubeLink() {
+        this._dialog.open(YoutubeLinkComponent, {
+            data: this.createPostForm.get('urls').value || []
+            // [{
+            //     type: PostTypeEnum.VIDEO_EMBED,
+            //     link: "https://www.youtube.com/embed/8CxkzeeuoIA"
+            // }],
+        }).afterClosed().subscribe(result => {
+            this.createPostForm.patchValue({ urls: result });
+            this._cdRef.markForCheck();
+        });
     }
 
     public addFile(event) {
@@ -120,11 +155,14 @@ export class PostsComponent implements AfterViewInit {
         const reader = new FileReader();
         reader.readAsDataURL(this.fileList[fileIndex]);
         reader.onload = () => {
-            this.fileListASDataUrl.push(reader.result)
-            console.log(this.fileListASDataUrl);
-            this._cdRef.markForCheck()
+            this.fileListASDataUrl.push(reader.result);
+            this._cdRef.markForCheck();
         }
         this.imageFile = null;
+    }
+
+    public setVisibilityItems(visibility: PostVisibilityEnum) {
+        this.createPostForm.patchValue({ 'visibility': visibility });
     }
 
     public remove(index: number) {

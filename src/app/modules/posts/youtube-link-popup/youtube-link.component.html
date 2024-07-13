@@ -1,0 +1,35 @@
+<div mat-dialog-title class="text-lg">Video link</div>
+<mat-dialog-content>
+    <ng-container *ngFor="let v of data; let index = index;">
+        <div *ngIf="v.type === getPostTypeEnum.VIDEO_EMBED" class="relative pt-15">
+            <button type="button" class="remove-icon" mat-icon-button (click)="remove(index)">
+                <mat-icon>delete</mat-icon>
+            </button>
+            <mat-form-field class="w-full">
+                <mat-label>Enter Any comment</mat-label>
+                <input matInput [(ngModel)]="v.name" />
+            </mat-form-field>
+            <mat-form-field class="w-full">
+                <mat-label>Enter Video Link</mat-label>
+                <input matInput [(ngModel)]="v.link" required />
+
+                @if (v.link && !v.link?.includes('youtube')) {
+                <mat-error>Valid youtube link is needed *</mat-error>
+                }
+            </mat-form-field>
+            @if (v.link && v.link?.includes('youtube')) {
+            <iframe allow="picture-in-picture" allowfullscreen class="video" frameborder="0" [src]="getUrl(v.link)"
+                title="YouTube video player"></iframe>
+            } @else {
+            Please provide a vaild youtube url
+            }
+        </div>
+    </ng-container>
+    <div>
+        <button class="float-right" mat-button (click)="add()">Add</button>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="cancel()">Close</button>
+    <button mat-button color="primary" [mat-dialog-close]="data">Submit</button>
+</mat-dialog-actions>

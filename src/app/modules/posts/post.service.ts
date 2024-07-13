@@ -16,7 +16,6 @@ export class PostService {
     }
 
     public createPost(payload: CreatePostDto): Observable<Object> {
-        // return of(posts)
         return this._httpService.post(UrlService.createPost(), payload);
     }
 }
