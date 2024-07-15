@@ -238,10 +238,7 @@ export class PostsComponent implements AfterViewInit {
         this.viewHelper.loading = true;
         firstValueFrom(this._postService.getPost(orgId))
             .then((res: PageableResponse<GetPostDto>) => {
-                this.postResponse = {
-                    ...res,
-                    content: res.content.filter(x => x.id === 329)
-                }
+                this.postResponse = res;
                 this._cdRef.markForCheck();
             })
             .catch(() => console.log()/**@todo handle error */)
