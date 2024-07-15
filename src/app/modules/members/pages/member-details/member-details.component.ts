@@ -10,7 +10,8 @@ import { FuseCardComponent } from '@fuse/components/card';
 
 @Component({
     selector: 'app-member-details',
-    templateUrl: './member-details.component.html',
+    template: 'TEST',
+    // templateUrl: './member-details.component.html',
     styleUrls: ['./member-details.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,25 +38,25 @@ export class MemberDetailsComponent implements OnInit {
     ) { }
     // activeIds: string[]
     ngOnInit(): void {
-        this._memberService.getMembers().subscribe();
-        this.members$ = this._memberService.members$;
+        // this._memberService.getMembers().subscribe();
+        // this.members$ = this._memberService.members$;
 
-        this._memberService.members$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contacts: Contact[]) => {
-                // let activeIds = ['cd5fa417-b667-482d-b208-798d9da3213c', 'beec5287-ed50-4504-858a-5dc3f8ce6935']
-                // this.contacts = contacts.filter(item => {
-                //     console.log(item, activeIds);
+        // this._memberService.members$
+        //     .pipe(takeUntil(this._unsubscribeAll))
+        //     .subscribe((contacts: Contact[]) => {
+        //         // let activeIds = ['cd5fa417-b667-482d-b208-798d9da3213c', 'beec5287-ed50-4504-858a-5dc3f8ce6935']
+        //         // this.contacts = contacts.filter(item => {
+        //         //     console.log(item, activeIds);
 
-                //     // activeIds.indexOf(item.id) === -1
-                // })
+        //         //     // activeIds.indexOf(item.id) === -1
+        //         // })
 
-                // Update the counts
-                this.contactsCount = contacts?.length ?? 0;
+        //         // Update the counts
+        //         this.contactsCount = contacts?.length ?? 0;
 
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+        //         // Mark for check
+        //         this._changeDetectorRef.markForCheck();
+        //     });
     }
 
 }

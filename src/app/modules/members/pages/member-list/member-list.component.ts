@@ -6,13 +6,15 @@ import {
     OnInit,
     ViewEncapsulation
 } from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {Observable, Subject} from 'rxjs';
-import {switchMap, takeUntil} from 'rxjs/operators';
-import {MemberService} from '../../member.service';
-import {Contact} from '../../member.type';
+import { FormControl } from '@angular/forms';
+import { Observable, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { MemberService } from '../../member.service';
+import { Contact } from '../../member.type';
 import { SharedModule } from 'app/shared/shared.module';
 import { MaterialModule } from 'app/shared/material.module';
+import { PageableResponse } from 'app/modal/pagable-response.dto';
+import { GetMemberDto } from 'app/modal/member/get-member.dto';
 
 @Component({
     selector: 'app-member-list',
@@ -20,7 +22,7 @@ import { MaterialModule } from 'app/shared/material.module';
     styleUrls: ['./member-list.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone:true,
+    standalone: true,
     imports: [
         SharedModule,
         MaterialModule
@@ -28,9 +30,9 @@ import { MaterialModule } from 'app/shared/material.module';
 })
 export class MemberListComponent implements OnInit, OnDestroy {
 
-    public contactsCount: number = 0;
-    public selectedContact: Contact ;
-    public members$: Observable<Contact[]>;
+    public memberCount: number = 0;
+    public selectedContact: GetMemberDto;
+    public members$: Observable<PageableResponse<GetMemberDto>>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     public searchInputControl: FormControl = new FormControl();
 
@@ -45,10 +47,10 @@ export class MemberListComponent implements OnInit, OnDestroy {
 
         this._memberService.members$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contacts: Contact[]) => {
+            .subscribe((member: PageableResponse<GetMemberDto>) => {
 
                 // Update the counts
-                this.contactsCount = contacts?.length ?? 0;
+                this.memberCount = member.content?.length ?? 0;
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

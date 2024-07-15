@@ -4,6 +4,10 @@ export class UrlService {
         return `${this._baseUrl()}/files/upload`;
     }
 
+    public static getMembers() {
+        return `${this._baseUrl2()}/members`;
+    }
+
     public static getPost(orgId: number) {
         return `${this._baseUrl()}/v1/posts?orgId=${orgId}`;
     }
@@ -14,5 +18,10 @@ export class UrlService {
 
     private static _baseUrl(): string {
         return 'http://ec2-54-242-152-107.compute-1.amazonaws.com:8500/api'
+    }
+
+    
+    private static _baseUrl2(): string {
+        return 'http://ec2-54-242-152-107.compute-1.amazonaws.com:8500'
     }
 }
