@@ -24,6 +24,7 @@ import { GetPostDto } from 'app/modal/post/get-post.dto';
 import { PageableResponse } from 'app/modal/pagable-response.dto';
 import { DateAgoPipe } from 'app/shared/pipes/date-age.pipe';
 import { ImageViewerComponent } from './image-viewer/image-viewer.component';
+import { VideoEmbeddedComponent } from './video-embedded/video-embedded.component';
 
 @Component({
     selector: 'posts',
@@ -42,7 +43,8 @@ import { ImageViewerComponent } from './image-viewer/image-viewer.component';
         // Components
         FuseCardComponent,
         YoutubeLinkComponent,
-        ImageViewerComponent
+        ImageViewerComponent,
+        VideoEmbeddedComponent
     ],
     providers: [PostService]
 })
@@ -236,7 +238,10 @@ export class PostsComponent implements AfterViewInit {
         this.viewHelper.loading = true;
         firstValueFrom(this._postService.getPost(orgId))
             .then((res: PageableResponse<GetPostDto>) => {
-                this.postResponse = res
+                this.postResponse = {
+                    ...res,
+                    content: res.content.filter(x => x.id === 329)
+                }
                 this._cdRef.markForCheck();
             })
             .catch(() => console.log()/**@todo handle error */)

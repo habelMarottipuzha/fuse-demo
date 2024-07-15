@@ -19,10 +19,6 @@ import { SharedModule } from "app/shared/shared.module";
 })
 export class ImageViewerComponent {
 
-    public get getPostTypeEnum(): typeof PostTypeEnum {
-        return PostTypeEnum;
-    }
-
     public get getImageList(): { count: number; urls: Url[] } {
 
         /**
@@ -36,5 +32,9 @@ export class ImageViewerComponent {
     }
 
     @Input() urls: Url[] = [];
+
+    errorHandler(event) {
+        event.target.src = "images/not-found-32x32.png";
+    }
 
 }

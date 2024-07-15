@@ -28,7 +28,7 @@ export class YoutubeLinkComponent {
     errorMessage = signal('');
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: Url[],
-        public domSanitizer: DomSanitizer
+        private _domSanitizer: DomSanitizer
     ) {
         // this.videoUrl = this.data ? this.data.filter(d => d.type === PostTypeEnum.VIDEO_EMBED) : [];
         if (!this.data?.length) {
@@ -66,6 +66,6 @@ export class YoutubeLinkComponent {
     }
 
     getUrl(url: string) {
-        return this.domSanitizer.bypassSecurityTrustResourceUrl(url)
+        return this._domSanitizer.bypassSecurityTrustResourceUrl(url)
     }
 }

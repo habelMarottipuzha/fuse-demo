@@ -155,6 +155,9 @@
                     <!-- IMAGE -->
                     <image-viewer [urls]="post.urls"></image-viewer>
 
+                    <!-- VIDEO_EMBED -->
+                    <video-embedded [urls]="post.urls"></video-embedded>
+
                     <!-- LOCATION -->
                     @if (post.metadata.location) {
                     <div [matTooltipPosition]="'right'" [matTooltip]="post.metadata.location"

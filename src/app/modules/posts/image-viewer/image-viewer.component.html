@@ -1,5 +1,5 @@
 @if (getImageList.count === 1) {
-<img alt="Card cover image" class="h-80 object-cover" [src]="getImageList.urls[0].link">
+<img alt="Card cover image" class="h-80 object-cover" (error)="errorHandler($event)" [src]="getImageList.urls[0].link">
 } @else if (getImageList.count === 2) {
 <div class="flex mx-6 sm:mx-8 mb-4">
     <ng-container *ngFor="let v of getImageList.urls;">
