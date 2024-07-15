@@ -28,17 +28,17 @@ export class MemberService {
      * Get Members
      */
     getMembers(): Observable<PageableResponse<GetMemberDto>> {
-        const memberList: PageableResponse<GetMemberDto> = {
-            ...member,
-            content: member.content.sort((a, b) => a.displayName.localeCompare(b.displayName))
-        }
-        return of(memberList)
-            .pipe(tap((res: PageableResponse<GetMemberDto>) => this._members.next(res)));
-        // return this._httpClient.get<PageableResponse<GetMemberDto>>(UrlService.getMembers()).pipe(
-        //     tap((contacts) => {
-        //         this._members.next(contacts);
-        //     })
-        // );
+        // const memberList: PageableResponse<GetMemberDto> = {
+        //     ...member,
+        //     content: member.content.sort((a, b) => a.displayName.localeCompare(b.displayName))
+        // }
+        // return of(memberList)
+        //     .pipe(tap((res: PageableResponse<GetMemberDto>) => this._members.next(res)));
+        return this._httpClient.get<PageableResponse<GetMemberDto>>(UrlService.getMembers()).pipe(
+            tap((contacts) => {
+                this._members.next(contacts);
+            })
+        );
     }
 
     /**

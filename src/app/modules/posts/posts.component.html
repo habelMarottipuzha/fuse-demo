@@ -95,7 +95,8 @@
 
             @if (!viewHelper.loading) {
             <!-- Card #59 - Expandable card -->
-            <fuse-card #expandableCard02="fuseCard" *ngFor="let post of postResponse.content"
+            @if (postResponse && postResponse.content) {
+            <fuse-card #expandableCard02="fuseCard" *ngFor="let post of postResponse?.content"
                 class="flex flex-col max-w-140 w-full filter-post filter-interactive">
                 <div class="flex items-center mx-6 sm:mx-8 mt-6 mb-4">
                     <img alt="Card cover image" class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-01.jpg">
@@ -404,6 +405,11 @@
                     </div>
                 </ng-container>
             </fuse-card>
+            } @else {
+            <div class="animate-pulse">
+                Posts are not found
+            </div>
+            }
             } @else {
             <div class="animate-pulse">
                 Loading post please wait...

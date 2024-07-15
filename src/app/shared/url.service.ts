@@ -1,11 +1,11 @@
 export class UrlService {
 
     public static fileUpload() {
-        return `${this._baseUrl()}/files/upload`;
+        return `${this._baseUrl()}/v1/files/upload`;
     }
 
     public static getMembers() {
-        return `${this._baseUrl2()}/members`;
+        return `${this._baseUrl()}/v1/members`;
     }
 
     public static getPost(orgId: number) {
@@ -17,11 +17,7 @@ export class UrlService {
     }
 
     private static _baseUrl(): string {
-        return 'http://ec2-54-242-152-107.compute-1.amazonaws.com:8500/api'
+        return 'https://socio01.line.pm/api'
     }
 
-    
-    private static _baseUrl2(): string {
-        return 'http://ec2-54-242-152-107.compute-1.amazonaws.com:8500'
-    }
 }

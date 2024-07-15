@@ -11,12 +11,6 @@ export default [
             {
                 path: 'list',
                 component: MemberListComponent,
-                // children: [
-                //     {
-                //         path: ':id',
-                //         component: MemberDetailsComponent
-                //     }
-                // ]
             },
             {
                 path: ':id',
