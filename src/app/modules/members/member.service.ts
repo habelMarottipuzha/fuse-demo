@@ -27,14 +27,17 @@ export class MemberService {
     /**
      * Get Members
      */
-    getMembers(): Observable<PageableResponse<GetMemberDto>> {
-        // const memberList: PageableResponse<GetMemberDto> = {
-        //     ...member,
-        //     content: member.content.sort((a, b) => a.displayName.localeCompare(b.displayName))
-        // }
-        // return of(memberList)
-        //     .pipe(tap((res: PageableResponse<GetMemberDto>) => this._members.next(res)));
-        return this._httpClient.get<PageableResponse<GetMemberDto>>(UrlService.getMembers()).pipe(
+    getMembers(query?: { [key: string]: any }): Observable<PageableResponse<GetMemberDto>> {
+        const queryP = new URLSearchParams({
+            sort: JSON.stringify([{
+                direction: 'asc',
+                property: 'displayName'
+            }])
+        });
+
+        const url = `${UrlService.getMembers()}?${queryP}`
+        // Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+        return this._httpClient.get<PageableResponse<GetMemberDto>>(url).pipe(
             tap((contacts) => {
                 this._members.next(contacts);
             })
@@ -49,7 +52,7 @@ export class MemberService {
     searchContacts(query: string): Observable<PageableResponse<GetMemberDto>> {
         const memberList: PageableResponse<GetMemberDto> = {
             ...member,
-            content: member.content.filter(x=> x.displayName.includes(query))
+            content: member.content.filter(x => x.displayName.includes(query))
         }
         return of(memberList)
             .pipe(tap((res: PageableResponse<GetMemberDto>) => this._members.next(res)));

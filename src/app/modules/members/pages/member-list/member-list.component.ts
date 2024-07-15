@@ -10,7 +10,6 @@ import { FormControl } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { MemberService } from '../../member.service';
-import { Contact } from '../../member.type';
 import { SharedModule } from 'app/shared/shared.module';
 import { MaterialModule } from 'app/shared/material.module';
 import { PageableResponse } from 'app/modal/pagable-response.dto';
@@ -77,12 +76,4 @@ export class MemberListComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
     }
-
-    /**
-     * createContact
-     */
-    public createContact() {
-
-    }
-
 }
