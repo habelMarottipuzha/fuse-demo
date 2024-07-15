@@ -2,6 +2,7 @@ import { HttpClient, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UrlService } from '../url.service';
+import { Url } from 'app/modal/post/create-post.dto';
 
 export enum ImageStatus {
   STARTED = 'STARTED',
@@ -11,10 +12,14 @@ export enum ImageStatus {
   NO_IMG = 'NO_IMG',
 }
 
+export enum FileUploadType {
+  IMAGE = 'image'
+}
+
 export interface UploadHelper {
   progress?: number | null;
   status?: ImageStatus;
-  uploadedFiles?: string[];
+  uploadedFiles?: Url[];
 }
 
 @Injectable({
@@ -28,23 +33,25 @@ export class FileUploadService {
   }
 
 
-  upload(images: File[], type: string) {
+  upload(images: File[], type: FileUploadType) {
     const fd = new FormData();
 
     for (const image of images) {
-      fd.append('image', image, image.name);
+      fd.append('file', image, image.name);
     }
 
     this.http.post(
-      `${UrlService.fileUpload(type)}`,
+      `${UrlService.fileUpload()}`,
       fd,
-      { reportProgress: true, observe: 'events' }
+      {
+        reportProgress: true, observe: 'events'
+      }
     )
       .subscribe({
         next: (event) => {
           this._handleUpload(event);
         },
-        error: (x) => console.log(x),
+        error: (x) => this.imageUploadHelper$.error({ err: "ddd" }),
       })
   }
 
@@ -86,7 +93,7 @@ export class FileUploadService {
           ...value,
           progress,
           status: ImageStatus.COMPLETED,
-          uploadedFiles: event?.body?.result || []
+          uploadedFiles: event?.body ? [event?.body] : []  /** @todo change needed */
         });
         break;
 

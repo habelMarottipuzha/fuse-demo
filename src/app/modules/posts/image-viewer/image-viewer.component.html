@@ -1,0 +1,82 @@
+@if (getImageList.count === 1) {
+<img alt="Card cover image" class="h-80 object-cover" [src]="getImageList.urls[0].link">
+} @else if (getImageList.count === 2) {
+<div class="flex mx-6 sm:mx-8 mb-4">
+    <ng-container *ngFor="let v of getImageList.urls;">
+        <div class="flex h-80 pr-1">
+            <img alt="Card cover image" class="rounded object-cover" [src]="v.link">
+        </div>
+    </ng-container>
+</div>
+} @else if(getImageList.count ===3 ){
+<div class="flex mx-6 sm:mx-8 mb-4">
+    <div class="flex h-80 pr-1">
+        <img alt="Card cover image" class="rounded object-cover" [src]="getImageList.urls[0].link">
+    </div>
+    <div class="flex flex-col pl-1">
+        <ng-container *ngFor="let v of getImageList.urls| slice:1:3;">
+            <div class="flex h-40 pb-1">
+                <img alt="Card cover image" class="rounded object-cover" [src]="v.link">
+            </div>
+        </ng-container>
+    </div>
+</div>
+}@else if(getImageList.count ===4 ){
+<div class="flex mx-6 sm:mx-8 mb-4">
+    <div class="flex flex-col pr-1">
+        <ng-container *ngFor="let v of getImageList.urls| slice:0:2;">
+            <div class="flex h-40 pb-1">
+                <img alt="Card cover image" class="rounded object-cover" [src]="v.link">
+            </div>
+        </ng-container>
+    </div>
+    <div class="flex flex-col pl-1">
+        <ng-container *ngFor="let v of getImageList.urls| slice:2:4;">
+            <div class="flex h-40 pb-1">
+                <img alt="Card cover image" class="rounded object-cover" [src]="v.link">
+            </div>
+        </ng-container>
+    </div>
+</div>
+} @else if(getImageList.count === 5){
+<div class="flex flex-col mx-6 sm:mx-8 mb-4">
+    <div class="flex pb-1">
+        <ng-container *ngFor="let v of getImageList.urls| slice:0:2;">
+            <div class="flex h-60 pr-1">
+                <img alt="Card cover image" class="rounded object-cover" [src]="v.link">
+            </div>
+        </ng-container>
+    </div>
+    <div class="flex pt-1">
+        <ng-container *ngFor="let v of getImageList.urls| slice:2:5;">
+            <div class="flex h-40 pr-1">
+                <img alt="Card cover image" class="rounded object-cover" [src]="v.link">
+            </div>
+        </ng-container>
+    </div>
+</div>
+} @else if(getImageList.count > 5){
+<div class="flex flex-col mx-6 sm:mx-8 mb-4">
+    <div class="flex pb-1">
+        <ng-container *ngFor="let v of getImageList.urls| slice:0:2;">
+            <div class="flex h-60 pr-1">
+                <img alt="Card cover image" class="rounded object-cover" [src]="v.link">
+            </div>
+        </ng-container>
+    </div>
+    <div class="flex pt-1">
+        <ng-container *ngFor="let v of getImageList.urls| slice:2:4;">
+            <div class="flex h-40 pr-1">
+                <img alt="Card cover image" class="rounded object-cover" [src]="v.link">
+            </div>
+        </ng-container>
+        <div class="relative flex h-40 pl-1">
+            <div class="absolute flex items-center justify-center inset-0 ml-1 rounded overflow-hidden">
+                <span class="z-10 text-4xl text-white">+{{getImageList.count - 5}}</span>
+                <span class="absolute w-full h-full bg-primary opacity-70"></span>
+            </div>
+            <img alt="Card cover image" class="rounded object-cover" [src]="getImageList.urls[4].link">
+        </div>
+    </div>
+</div>
+}

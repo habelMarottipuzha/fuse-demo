@@ -13,12 +13,17 @@ import { FuseCardComponent } from '@fuse/components/card';
 import { MaterialModule } from 'app/shared/material.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { PostService } from './post.service';
-import { catchError, firstValueFrom, of } from 'rxjs';
+import { BehaviorSubject, catchError, firstValueFrom, of } from 'rxjs';
 import { PostTypeEnum, PostVisibilityEnum } from 'app/modal/post/post-enum';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreatePostDto, Url } from 'app/modal/post/create-post.dto';
 import { MatDialog } from '@angular/material/dialog';
 import { YoutubeLinkComponent } from './youtube-link-popup/youtube-link.component';
+import { FileUploadService, FileUploadType, ImageStatus, UploadHelper } from 'app/shared/services/file-upload.service';
+import { GetPostDto } from 'app/modal/post/get-post.dto';
+import { PageableResponse } from 'app/modal/pagable-response.dto';
+import { DateAgoPipe } from 'app/shared/pipes/date-age.pipe';
+import { ImageViewerComponent } from './image-viewer/image-viewer.component';
 
 @Component({
     selector: 'posts',
@@ -28,11 +33,16 @@ import { YoutubeLinkComponent } from './youtube-link-popup/youtube-link.componen
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        ReactiveFormsModule,
         SharedModule,
         MaterialModule,
+
+        // Pipe
+        DateAgoPipe,
+
+        // Components
         FuseCardComponent,
-        YoutubeLinkComponent
+        YoutubeLinkComponent,
+        ImageViewerComponent
     ],
     providers: [PostService]
 })
@@ -44,10 +54,14 @@ export class PostsComponent implements AfterViewInit {
     imageFile = null;
     fileList: File[] = [];
     fileListASDataUrl: any[] = [];
-
+    imageUploadHelper$: BehaviorSubject<UploadHelper>;
+    uploadHelper: UploadHelper;
     viewHelper = {
-        submitting: false
+        submitting: false,
+        loading: false,
     }
+
+    postResponse: PageableResponse<GetPostDto>;
 
     @ViewChildren(FuseCardComponent, { read: ElementRef }) private _fusePosts: QueryList<ElementRef>;
 
@@ -75,7 +89,8 @@ export class PostsComponent implements AfterViewInit {
         private _renderer2: Renderer2,
         private _postService: PostService,
         private _cdRef: ChangeDetectorRef,
-        private _dialog: MatDialog
+        private _dialog: MatDialog,
+        private _fileUploadService: FileUploadService
     ) {
         this.createPostForm = new FormGroup({
             title: new FormControl(''),
@@ -94,6 +109,27 @@ export class PostsComponent implements AfterViewInit {
         console.log(this.createPostForm.value);
 
         this._getPost(1);
+
+        /**
+         * Image upload listerner
+         */
+        this.imageUploadHelper$ = this._fileUploadService.imageUploadHelper$;
+        this.imageUploadHelper$.subscribe({
+            next: (uploadHelper: UploadHelper) => {
+                this.uploadHelper = uploadHelper;
+                if (uploadHelper.status === ImageStatus.COMPLETED) {
+                    this.createPost(uploadHelper.uploadedFiles);
+                }
+                /**
+                 * @todo handle error
+                 */
+                this._cdRef.markForCheck();
+            },
+            error: () => {
+                this.viewHelper.submitting = false;
+                this._cdRef.markForCheck();
+            }
+        })
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -112,29 +148,51 @@ export class PostsComponent implements AfterViewInit {
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
-
-    public createPost() {
+    public createPost(uploadedFiles: Url[]) {
         const isValid = this.createPostForm.valid;
         if (isValid) {
-            this.viewHelper.submitting = true;
-            firstValueFrom(this._postService.createPost(this.createPostForm.value))
+            const d: CreatePostDto = this.createPostForm.value;
+            const payload: CreatePostDto = {
+                ...d,
+                urls: [
+                    ...d?.urls ?? [],
+                    ...uploadedFiles
+                ]
+            };
+
+            firstValueFrom(this._postService.createPost(payload))
+                .then(() => {
+                    this.fileList = [];
+                    this.fileListASDataUrl = [];
+                    this.createPostForm.reset();
+                })
+                .catch(x => console.log()/**@todo handle error */)
                 .finally(() => {
                     this.viewHelper.submitting = false;
                     this._cdRef.markForCheck();
                 });
         } else {
-            console.log("ERROR");
+            /**
+             * @todo check and handle if needed
+             */
         }
+    }
 
+    public onSubmit() {
+        if (!this.createPostForm.valid) return;
+        /** @todo add upload error actions */
+
+        /**
+         * upload file
+         * - @var imageUploadHelper$ will trigger
+         */
+        this.viewHelper.submitting = true;
+        this._fileUploadService.upload(this.fileList, FileUploadType.IMAGE);
     }
 
     public enterYoutubeLink() {
         this._dialog.open(YoutubeLinkComponent, {
             data: this.createPostForm.get('urls').value || []
-            // [{
-            //     type: PostTypeEnum.VIDEO_EMBED,
-            //     link: "https://www.youtube.com/embed/8CxkzeeuoIA"
-            // }],
         }).afterClosed().subscribe(result => {
             this.createPostForm.patchValue({ urls: result });
             this._cdRef.markForCheck();
@@ -174,66 +232,17 @@ export class PostsComponent implements AfterViewInit {
     // @ Private methods
     // -----------------------------------------------------------------------------------------------------
 
-    private _setImageAsDataUrl() {
-        if (!this.fileList?.length) return;
-
-        for (const index in this.fileList) {
-
-            const mimeType = this.fileList[index].type;
-            if (mimeType.match(/image\/*/) == null) {
-                alert("Only image files are supported")
-                // this.fileListASDataUrl[index] = "Only images are supported.";
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.readAsDataURL(this.fileList[index]);
-            reader.onload = () => {
-                this.fileListASDataUrl.push(reader.result);
-                this._cdRef.markForCheck();
-            }
-        }
-    }
-
-    /**
-     * Filter the posts based on the selected filter
-     *
-     * @private
-     */
-    private _filterPosts(): void {
-        // Go through all fuse-posts
-        this._fusePosts.forEach((fuseCard) => {
-
-            // If the 'all' filter is selected...
-            if (this.selectedFilter === 'all') {
-                // Remove hidden class from all posts
-                fuseCard.nativeElement.classList.remove('hidden');
-            }
-            // Otherwise...
-            else {
-                // If the card has the class name that matches the selected filter...
-                if (fuseCard.nativeElement.classList.contains('filter-' + this.selectedFilter)) {
-                    // Remove the hidden class
-                    fuseCard.nativeElement.classList.remove('hidden');
-                }
-                // Otherwise
-                else {
-                    // Add the hidden class
-                    fuseCard.nativeElement.classList.add('hidden');
-                }
-            }
-        });
-    }
-
     private _getPost(orgId: number) {
-        this._postService
-            .getPost(orgId)
-            .pipe(catchError((error) => {
-                console.error('There was an error!', error);
-                return of();
-            }))
-            .subscribe((post) => {
-                console.log(post);
+        this.viewHelper.loading = true;
+        firstValueFrom(this._postService.getPost(orgId))
+            .then((res: PageableResponse<GetPostDto>) => {
+                this.postResponse = res
+                this._cdRef.markForCheck();
             })
+            .catch(() => console.log()/**@todo handle error */)
+            .finally(() => {
+                this.viewHelper.loading = false;
+                /** @todo loding can be handled */
+            });
     }
 }

@@ -10,9 +10,9 @@ export class PostService {
 
     constructor(private _httpService: HttpClient) { }
 
-    public getPost(orgId: number): Observable<Object> {
-        return of(posts)
-        // return this._httpService.get(UrlService.getPost(orgId));
+    public getPost(orgId: number): Observable<any> {
+        // return of(posts)
+        return this._httpService.get(UrlService.getPost(orgId));
     }
 
     public createPost(payload: CreatePostDto): Observable<Object> {

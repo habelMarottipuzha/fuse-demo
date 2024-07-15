@@ -16,18 +16,25 @@
     <!-- Main -->
     <div class="flex-auto p-6 sm:p-10">
 
-        <div class="flex flex-wrap items-start w-full max-w-400 -m-4">
+        <div class="w-full">
+            <!-- <div class="flex flex-wrap items-start w-full max-w-400 -m-4"> -->
             <!-- Card #58 -->
-            <fuse-card class="flex flex-col max-w-140 w-full p-6 sm:p-8 pb-6 filter-post">
-                <form [formGroup]="createPostForm" (ngSubmit)="createPost()">
+            <fuse-card [class.pointer-events-none]="viewHelper.submitting"
+                class="flex flex-col max-w-140 w-full p-6 sm:p-8 pb-6 filter-post">
+                <form [formGroup]="createPostForm" (ngSubmit)="onSubmit()">
 
                     <div class="flex items-center justify-between">
                         <div class="text-xl font-semibold">Create Post</div>
-                        <button [disabled]="viewHelper.submitting" type="submit" class="px-3 mr-1 hidden sm:inline-flex float-right" color="primary"
-                            mat-flat-button>
+                        <button [disabled]="viewHelper.submitting" type="submit"
+                            class="px-3 mr-1 hidden sm:inline-flex float-right" color="primary" mat-flat-button>
                             <span> &nbsp;&nbsp;Post&nbsp;&nbsp; </span>
                         </button>
                     </div>
+                    @if (viewHelper.submitting) {
+                    <div class="animate-pulse">
+                        Publishing post please wait...
+                    </div>
+                    }
                     <div class="flex flex-col sm:flex-row items-start mt-8">
                         <div class="flex items-center mb-6 sm:mb-0"></div>
                         <mat-form-field class="fuse-mat-textarea fuse-mat-no-subscript w-full">
@@ -37,7 +44,7 @@
                     </div>
                     <div class="flex items-center mt-6 sm:mt-8 -mx-3">
                         <button type="button" [matMenuTriggerFor]="postCardMenu01" class="px-3 mr-1" mat-button>
-                            <mat-icon [svgIcon]="'heroicons_solid:photograph'" class="icon-size-5 mr-2"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_solid:lock-closed'" class="icon-size-5 mr-2"></mat-icon>
                             <span>{{getVisibility | titlecase}}</span>
                         </button>
                         <mat-menu #postCardMenu01="matMenu">
@@ -53,31 +60,32 @@
 
                         <button (click)="enterYoutubeLink()" [matBadge]="youtubeUrl" [matBadgeHidden]="!youtubeUrl"
                             type="button" class="px-3 mr-1" mat-button>
-                            <mat-icon [svgIcon]="'heroicons_solid:photograph'" class="icon-size-5 mr-2"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_solid:video-camera'" class="icon-size-5 mr-2"></mat-icon>
                             <span>Youtube Link</span>
                         </button>
 
-                        <button (click)="photoUpload.click()" [matBadge]="images?.length" [matBadgeHidden]="!images?.length"
-                            type="button" class="px-3 mr-1" mat-button>
-                            <mat-icon [svgIcon]="'heroicons_solid:photograph'" class="icon-size-5 mr-2"></mat-icon>
+                        <button (click)="photoUpload.click()" [matBadge]="images?.length"
+                            [matBadgeHidden]="!images?.length" type="button" class="px-3 mr-1" mat-button>
+                            <mat-icon [svgIcon]="'heroicons_solid:photo'" class="icon-size-5 mr-2"></mat-icon>
                             <span>Photo</span>
                         </button>
 
                         <input #photoUpload [ngModelOptions]="{standalone: true}" [(ngModel)]="imageFile" type="file"
                             class="file-upload hidden" (change)="addFile($event)">
                         <button disabled type="button" class="px-3 mr-1 hidden sm:inline-flex" mat-button>
-                            <mat-icon [svgIcon]="'heroicons_solid:user-circle'" class="icon-size-5 mr-2"></mat-icon>
-                            <span>Tag Friends</span>
+                            <mat-icon [svgIcon]="'heroicons_solid:users'" class="icon-size-5 mr-2"></mat-icon>
+                            <span>Tag members</span>
                         </button>
                         <button [disabled]="true" type="button" class="px-3 mr-1 hidden sm:inline-flex" mat-button>
-                            <mat-icon [svgIcon]="'heroicons_solid:emoji-happy'" class="icon-size-5 mr-2"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_solid:map-pin'" class="icon-size-5 mr-2"></mat-icon>
                             <span>Location</span>
                         </button>
                     </div>
                     <div *ngIf="images?.length" class="flex flex-wrap wrapper mt-3">
                         <div *ngFor="let img of images; index as index" class="selected-images relative">
                             <button type="button" mat-icon-button (click)="remove(index)">
-                                <mat-icon>delete</mat-icon>
+                                <!-- <mat-icon>delete</mat-icon> -->
+                                <mat-icon [svgIcon]="'heroicons_solid:trash'" class="icon-size-5 mr-2"></mat-icon>
                             </button>
                             <img class="w-48" [src]="img" alt="img">
                         </div>
@@ -85,15 +93,15 @@
                 </form>
             </fuse-card>
 
-
+            @if (!viewHelper.loading) {
             <!-- Card #59 - Expandable card -->
-            <fuse-card #expandableCard02="fuseCard"
+            <fuse-card #expandableCard02="fuseCard" *ngFor="let post of postResponse.content"
                 class="flex flex-col max-w-140 w-full filter-post filter-interactive">
                 <div class="flex items-center mx-6 sm:mx-8 mt-6 mb-4">
                     <img alt="Card cover image" class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-01.jpg">
                     <div class="flex flex-col">
-                        <span class="font-semibold leading-none">Caroline Lundu</span>
-                        <span class="text-sm text-secondary leading-none mt-1">29 minutes ago</span>
+                        <span class="font-semibold leading-none">{{post.createdBy || 'NA'}}</span>
+                        <span class="text-sm text-secondary leading-none mt-1">{{post.createdAt | dateAgo}}</span>
                     </div>
                     <button [matMenuTriggerFor]="postCardMenu02" class="ml-auto -mr-4" mat-icon-button>
                         <mat-icon [svgIcon]="'heroicons_solid:dots-vertical'" class="icon-size-5"></mat-icon>
@@ -139,17 +147,23 @@
                         </button>
                     </mat-menu>
                 </div>
-                <div class="mx-6 sm:mx-8 mt-2 mb-6">
-                    Look at that sky! I so want to be there.. Can we arrange a trip? Is that a possibility? Please!!!
-                </div>
+                <!-- CONTENT -->
+                <div class="mx-6 sm:mx-8 mt-2 mb-6 font-bold">{{post.title}}</div>
+                <div class="mx-6 sm:mx-8 mt-2 mb-6">{{post.content}}</div>
+                <!-- MEDIA -->
                 <div class="relative mb-4">
-                    <img alt="Card cover image" class="h-80 object-cover" src="images/cards/14-640x480.jpg">
-                    <div [matTooltipPosition]="'right'" [matTooltip]="'Barmouth / UK'"
+                    <!-- IMAGE -->
+                    <image-viewer [urls]="post.urls"></image-viewer>
+
+                    <!-- LOCATION -->
+                    @if (post.metadata.location) {
+                    <div [matTooltipPosition]="'right'" [matTooltip]="post.metadata.location"
                         class="absolute bottom-0 left-0 flex items-center justify-center w-8 h-8 m-4 rounded-full cursor-pointer bg-gray-700">
-                        <mat-icon [svgIcon]="'heroicons_solid:location-marker'"
-                            class="icon-size-4 text-gray-100"></mat-icon>
+                        <mat-icon [svgIcon]="'heroicons_solid:map-pin'" class="icon-size-4 text-gray-100"></mat-icon>
                     </div>
+                    }
                 </div>
+                <!-- ACTIONS -->
                 <div class="flex items-center mx-3 sm:mx-5">
                     <button [routerLink]="['./']" class="px-3 mr-1" mat-button>
                         <mat-icon [svgIcon]="'heroicons_solid:heart'" class="icon-size-5 text-red-500 mr-2"></mat-icon>
@@ -165,6 +179,7 @@
                     </button>
                 </div>
                 <hr class="border-b mx-6 sm:mx-8 mt-4 mb-6">
+                <!-- FOOTER -->
                 <div class="flex flex-col sm:flex-row sm:items-center mx-6 sm:mx-8 mb-4 sm:mb-6">
                     <div class="flex items-center">
                         <img alt="Card cover image" class="w-6 h-6 m-0.5 rounded-full text-card ring-2 ring-bg-card"
@@ -194,7 +209,7 @@
                         </button>
                     </div>
                 </div>
-
+                <!-- COMMENTS -->
                 <ng-container fuseCardExpansion>
                     <hr class="border-b m-0">
                     <div class="flex flex-col mx-4 sm:mx-8 mt-6 mb-3">
@@ -386,8 +401,15 @@
                     </div>
                 </ng-container>
             </fuse-card>
+            } @else {
+            <div class="animate-pulse">
+                Loading post please wait...
+            </div>
+            }
 
 
+            <!-- @todo remove  -->
+            @if (false) {
             <!-- Card #60 -->
             <fuse-card class="flex flex-col max-w-140 w-full filter-post">
                 <div class="flex items-center mx-6 sm:mx-8 mt-6 mb-4">
@@ -1301,6 +1323,7 @@
                 </div>
             </fuse-card>
 
+            }
         </div>
 
     </div>

@@ -36,11 +36,12 @@ export const authInterceptor = (
         authService.accessToken &&
         !AuthUtils.isTokenExpired(authService.accessToken)
     ) {
+        const detectedType = req.detectContentTypeHeader();
         newReq = req.clone({
             headers: req.headers.set(
                 'Authorization',
-                'Bearer ' + authService.accessToken
-            ),
+                'Basic dXNlcjpwYXNzd29yZA=='
+            )
         });
     }
 
