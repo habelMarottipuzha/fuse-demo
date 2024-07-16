@@ -1,3 +1,4 @@
+@if (!viewHelper.loading) {
 <div class="flex flex-col flex-auto min-w-0">
 
     <!-- Header -->
@@ -5,7 +6,7 @@
 
         <!-- Cover image -->
         <div>
-            <img class="h-40 lg:h-80 object-cover" src="images/profile/cover.jpg" alt="Cover image">
+            <img class="h-40 lg:h-80 object-cover" src="images/cards/01-320x200.jpg" alt="Cover image">
         </div>
 
         <!-- User info -->
@@ -13,24 +14,35 @@
 
             <!-- Avatar -->
             <div class="-mt-26 lg:-mt-22 rounded-full">
-                <img class="w-32 h-32 rounded-full ring-4 ring-bg-card" src="images/avatars/male-04.jpg"
+                @if(selectedMember.imageLink){
+                <img class="w-32 h-32 rounded-full ring-4 ring-bg-card" [src]="selectedMember.imageLink"
                     alt="User avatar">
+                }@else {
+                <div
+                    class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                    {{(member.displayName || member.firstName).charAt(0)}}
+                </div>
+                }
             </div>
 
             <!-- Details -->
             <div class="flex flex-col items-center lg:items-start mt-4 lg:mt-0 lg:ml-8">
-                <div class="text-lg font-bold leading-none">Adam John</div>
-                <div class="text-secondary">baptism name</div>
+                <div class="text-lg font-bold leading-none">{{selectedMember.displayName}}</div>
+                <div class="text-secondary">baptism name baptism namebaptism namebaptism name</div>
             </div>
 
             <!-- Menu -->
             <div class="flex items-center mt-8 mb-4 lg:m-0 lg:ml-auto space-x-6">
-                <button mat-icon-button>
-                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:phone'"></mat-icon>
-                </button>
-                <button mat-icon-button>
-                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:mail'"></mat-icon>
-                </button>
+                <a [href]="'tel:' + selectedMember.mobile">
+                    <button mat-icon-button>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:phone'"></mat-icon>
+                    </button>
+                </a>
+                <a [href]="'mailto:' + selectedMember.email">
+                    <button mat-icon-button [disabled]="!selectedMember.email">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
+                    </button>
+                </a>
             </div>
 
         </div>
@@ -47,14 +59,18 @@
                 <div class="text-2xl font-semibold leading-tight">About</div>
                 <div class="-mr-3">
                     <button mat-icon-button>
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-square'"></mat-icon>
                     </button>
                 </div>
             </div>
             <div class="flex flex-col mt-6">
                 <div class="flex items-center">
-                    <mat-icon class="icon-size-5 mr-3" [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
-                    <span class="leading-5">Kandallor thekkethil, Upputhara P.O, Porikanni Pin: 685504</span>
+                    <mat-icon class="icon-size-5 mr-3" [svgIcon]="'heroicons_solid:home-modern'"></mat-icon>
+                    <span class="leading-5">{{selectedMember.street}}</span>
+                </div>
+                <div class="flex items-center mt-4">
+                    <mat-icon class="icon-size-5 mr-3" [svgIcon]="'heroicons_solid:map-pin'"></mat-icon>
+                    <span class="leading-5">{{selectedMember.city}}</span>
                 </div>
                 <div class="flex items-center mt-4">
                     <mat-icon class="icon-size-5 mr-3" [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
@@ -76,7 +92,7 @@
                 <div class="text-2xl font-semibold leading-tight">My Family</div>
                 <div class="-mr-3">
                     <button mat-icon-button [matMenuTriggerFor]="listCard08Menu">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
                     </button>
                     <mat-menu #listCard08Menu="matMenu">
                         <button mat-menu-item>Add new</button>
@@ -130,7 +146,7 @@
                 <div class="text-2xl font-semibold leading-tight">Gallery</div>
                 <div class="-mr-3">
                     <button mat-icon-button [matMenuTriggerFor]="listCard09Menu">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
                     </button>
                     <mat-menu #listCard09Menu="matMenu">
                         <button mat-menu-item>Add image</button>
@@ -193,7 +209,7 @@
                 <div class="text-2xl font-semibold leading-tight">Groups</div>
                 <div class="-mr-3">
                     <button mat-icon-button [matMenuTriggerFor]="listCard02Menu">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
                     </button>
                     <mat-menu #listCard02Menu="matMenu">
                         <button mat-menu-item>Search for groups</button>
@@ -202,8 +218,8 @@
             </div>
             <div class="flex flex-col mt-5">
                 <div class="flex items-center">
-                    <img class="w-14 h-14 mr-4 rounded object-cover"
-                        src="images/cards/coffee-shop-01-320x200.jpg" alt="Card cover image">
+                    <img class="w-14 h-14 mr-4 rounded object-cover" src="images/cards/coffee-shop-01-320x200.jpg"
+                        alt="Card cover image">
                     <div class="flex flex-col min-w-0">
                         <div class="font-medium leading-none">The Port Cafe</div>
                         <div class="text-md truncate leading-none mt-1">Best cafe of the downtown New York</div>
@@ -211,8 +227,8 @@
                     </div>
                 </div>
                 <div class="flex items-center mt-6">
-                    <img class="w-14 h-14 mr-4 rounded object-cover"
-                        src="images/cards/coffee-shop-02-512x512.jpg" alt="Card cover image">
+                    <img class="w-14 h-14 mr-4 rounded object-cover" src="images/cards/coffee-shop-02-512x512.jpg"
+                        alt="Card cover image">
                     <div class="flex flex-col min-w-0">
                         <div class="font-medium leading-none">Design House LLC.</div>
                         <div class="text-md truncate leading-none mt-1">UI/UX, brand and product design</div>
@@ -220,8 +236,8 @@
                     </div>
                 </div>
                 <div class="flex items-center mt-6">
-                    <img class="w-14 h-14 mr-4 rounded object-cover"
-                        src="images/cards/coffee-shop-03-320x320.jpg" alt="Card cover image">
+                    <img class="w-14 h-14 mr-4 rounded object-cover" src="images/cards/coffee-shop-03-320x320.jpg"
+                        alt="Card cover image">
                     <div class="flex flex-col min-w-0">
                         <div class="font-medium leading-none">Crax Laser Tag</div>
                         <div class="text-md truncate leading-none mt-1">30% off with group of 6 people</div>
@@ -251,7 +267,7 @@
                 <div class="text-2xl font-semibold leading-tight">News</div>
                 <div class="-mr-3">
                     <button mat-icon-button [matMenuTriggerFor]="listCard01Menu">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
                     </button>
                     <mat-menu #listCard01Menu="matMenu">
                         <button mat-menu-item>Mark all as read</button>
@@ -293,7 +309,7 @@
                 <div class="text-2xl font-semibold leading-tight">Activity Feed</div>
                 <div class="-mr-3">
                     <button mat-icon-button [matMenuTriggerFor]="listCard04Menu">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
                     </button>
                     <mat-menu #listCard04Menu="matMenu">
                         <button mat-menu-item>Clear activities</button>
@@ -302,32 +318,28 @@
             </div>
             <div class="flex flex-col mt-5">
                 <div class="flex">
-                    <img class="w-10 h-10 mr-4 rounded-full" src="images/avatars/female-01.jpg"
-                        alt="Card cover image">
+                    <img class="w-10 h-10 mr-4 rounded-full" src="images/avatars/female-01.jpg" alt="Card cover image">
                     <div class="flex flex-col min-w-0">
                         <div class="leading-tight">Amelia Edwards commented on John Silverton's photo</div>
                         <div class="text-md leading-none text-secondary mt-2">4 minutes ago</div>
                     </div>
                 </div>
                 <div class="flex mt-8">
-                    <img class="w-10 h-10 mr-4 rounded-full" src="images/avatars/male-01.jpg"
-                        alt="Card cover image">
+                    <img class="w-10 h-10 mr-4 rounded-full" src="images/avatars/male-01.jpg" alt="Card cover image">
                     <div class="flex flex-col min-w-0">
                         <div class="leading-tight">Lew Silverton changed his profile photo</div>
                         <div class="text-md leading-none text-secondary mt-2">25 minutes ago</div>
                     </div>
                 </div>
                 <div class="flex mt-8">
-                    <img class="w-10 h-10 mr-4 rounded-full" src="images/avatars/male-15.jpg"
-                        alt="Card cover image">
+                    <img class="w-10 h-10 mr-4 rounded-full" src="images/avatars/male-15.jpg" alt="Card cover image">
                     <div class="flex flex-col min-w-0">
                         <div class="leading-tight">Adam John liked your photo</div>
                         <div class="text-md leading-none text-secondary mt-2">3 hours ago</div>
                     </div>
                 </div>
                 <div class="flex mt-8">
-                    <img class="w-10 h-10 mr-4 rounded-full" src="images/avatars/female-15.jpg"
-                        alt="Card cover image">
+                    <img class="w-10 h-10 mr-4 rounded-full" src="images/avatars/female-15.jpg" alt="Card cover image">
                     <div class="flex flex-col min-w-0">
                         <div class="leading-tight">Marleah Eagleston commented on John Silverton's photo</div>
                         <div class="text-md leading-none text-secondary mt-2">Yesterday</div>
@@ -415,14 +427,13 @@
             <!-- Post 1 -->
             <fuse-card class="flex flex-col max-w-140 w-full mt-8" #expandableCard02="fuseCard">
                 <div class="flex items-center mx-6 sm:mx-8 mt-6 mb-4">
-                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-01.jpg"
-                        alt="Card cover image">
+                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-01.jpg" alt="Card cover image">
                     <div class="flex flex-col">
                         <span class="font-semibold leading-none">Caroline Lundu</span>
                         <span class="text-sm text-secondary leading-none mt-1">29 minutes ago</span>
                     </div>
                     <button class="ml-auto -mr-4" mat-icon-button [matMenuTriggerFor]="postCardMenu02">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
                     </button>
                     <mat-menu #postCardMenu02="matMenu">
                         <button mat-menu-item>
@@ -715,14 +726,13 @@
             <!-- Post 2 -->
             <fuse-card class="flex flex-col max-w-140 w-full mt-8">
                 <div class="flex items-center mx-6 sm:mx-8 mt-6 mb-1">
-                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-01.jpg"
-                        alt="Card cover image">
+                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-01.jpg" alt="Card cover image">
                     <div class="flex flex-col">
                         <span class="font-semibold leading-none">Caroline Lundu</span>
                         <span class="text-sm text-secondary leading-none mt-1">29 minutes ago</span>
                     </div>
                     <button class="ml-auto -mr-4" mat-icon-button [matMenuTriggerFor]="postCardMenu08">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
                     </button>
                     <mat-menu #postCardMenu08="matMenu">
                         <button mat-menu-item>
@@ -822,14 +832,13 @@
             <!-- Post 3 -->
             <fuse-card class="flex flex-col max-w-140 w-full mt-8">
                 <div class="flex items-center mx-6 sm:mx-8 mt-6 mb-4">
-                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-14.jpg"
-                        alt="Card cover image">
+                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-14.jpg" alt="Card cover image">
                     <div class="flex flex-col">
                         <span class="font-semibold leading-none">Marleah Eagleston</span>
                         <span class="text-sm text-secondary leading-none mt-1">29 minutes ago</span>
                     </div>
                     <button class="ml-auto -mr-4" mat-icon-button [matMenuTriggerFor]="postCardMenu04">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
                     </button>
                     <mat-menu #postCardMenu04="matMenu">
                         <button mat-menu-item>
@@ -877,17 +886,14 @@
                 </div>
                 <div class="flex mx-6 sm:mx-8 mb-4">
                     <div class="flex h-80 pr-1">
-                        <img class="rounded object-cover" src="images/cards/17-640x480.jpg"
-                            alt="Card cover image">
+                        <img class="rounded object-cover" src="images/cards/17-640x480.jpg" alt="Card cover image">
                     </div>
                     <div class="flex flex-col pl-1">
                         <div class="flex h-40 pb-1">
-                            <img class="rounded object-cover" src="images/cards/18-640x480.jpg"
-                                alt="Card cover image">
+                            <img class="rounded object-cover" src="images/cards/18-640x480.jpg" alt="Card cover image">
                         </div>
                         <div class="flex h-40 pt-1">
-                            <img class="rounded object-cover" src="images/cards/19-640x480.jpg"
-                                alt="Card cover image">
+                            <img class="rounded object-cover" src="images/cards/19-640x480.jpg" alt="Card cover image">
                         </div>
                     </div>
                 </div>
@@ -933,14 +939,13 @@
             <!-- Post 4 -->
             <fuse-card class="flex flex-col max-w-140 w-full mt-8">
                 <div class="flex items-center mx-6 sm:mx-8 mt-6 mb-4">
-                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-01.jpg"
-                        alt="Card cover image">
+                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-01.jpg" alt="Card cover image">
                     <div class="flex flex-col">
                         <span class="font-medium leading-none">Caroline Lundu</span>
                         <span class="text-sm text-secondary leading-none mt-1">29 minutes ago</span>
                     </div>
                     <button class="ml-auto -mr-4" mat-icon-button [matMenuTriggerFor]="postCardMenu10">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
                     </button>
                     <mat-menu #postCardMenu10="matMenu">
                         <button mat-menu-item>
@@ -1044,14 +1049,13 @@
             <!-- Post 5 -->
             <fuse-card class="flex flex-col max-w-140 w-full mt-8">
                 <div class="flex items-center mx-6 sm:mx-8 mt-6 mb-4">
-                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-14.jpg"
-                        alt="Card cover image">
+                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-14.jpg" alt="Card cover image">
                     <div class="flex flex-col">
                         <span class="font-semibold leading-none">Marleah Eagleston</span>
                         <span class="text-sm text-secondary leading-none mt-1">29 minutes ago</span>
                     </div>
                     <button class="ml-auto -mr-4" mat-icon-button [matMenuTriggerFor]="postCardMenu03">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
                     </button>
                     <mat-menu #postCardMenu03="matMenu">
                         <button mat-menu-item>
@@ -1099,12 +1103,10 @@
                 </div>
                 <div class="flex mx-6 sm:mx-8 mb-4">
                     <div class="flex h-80 pr-1">
-                        <img class="rounded object-cover" src="images/cards/15-640x480.jpg"
-                            alt="Card cover image">
+                        <img class="rounded object-cover" src="images/cards/15-640x480.jpg" alt="Card cover image">
                     </div>
                     <div class="flex h-80 pl-1">
-                        <img class="rounded object-cover" src="images/cards/16-640x480.jpg"
-                            alt="Card cover image">
+                        <img class="rounded object-cover" src="images/cards/16-640x480.jpg" alt="Card cover image">
                     </div>
                 </div>
                 <div class="flex items-center mx-3 sm:mx-5">
@@ -1149,14 +1151,13 @@
             <!-- Post 6 -->
             <fuse-card class="flex flex-col max-w-140 w-full mt-8">
                 <div class="flex items-center mx-6 sm:mx-8 mt-6 mb-4">
-                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-01.jpg"
-                        alt="Card cover image">
+                    <img class="w-10 h-10 rounded-full mr-4" src="images/avatars/female-01.jpg" alt="Card cover image">
                     <div class="flex flex-col">
                         <span class="font-semibold leading-none">Caroline Lundu</span>
                         <span class="text-sm text-secondary leading-none mt-1">29 minutes ago</span>
                     </div>
                     <button class="ml-auto -mr-4" mat-icon-button [matMenuTriggerFor]="postCardMenu09">
-                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:dots-vertical'"></mat-icon>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
                     </button>
                     <mat-menu #postCardMenu09="matMenu">
                         <button mat-menu-item>
@@ -1263,3 +1264,8 @@
     </div>
 
 </div>
+} @else {
+<div>
+    Loading....
+</div>
+}

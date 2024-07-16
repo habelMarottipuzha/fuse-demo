@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
+import { Component, ViewEncapsulation, ChangeDetectionStrategy } from "@angular/core";
 import { MaterialModule } from "../material.module";
 import { SharedModule } from "../shared.module";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -36,9 +36,9 @@ export interface CreateMemberQueryParms {
     ]
 })
 export class CreateMemberComponent {
-    createMemberForm: FormGroup;
-    createMemberHelper: CreateMemberQueryParms;
-    viewHelper = {
+    public createMemberForm: FormGroup;
+    public createMemberHelper: CreateMemberQueryParms;
+    public viewHelper = {
         submitting: false,
         loading: false,
     }
@@ -46,7 +46,6 @@ export class CreateMemberComponent {
         private _formBuilder: FormBuilder,
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
-        private _cdRef: ChangeDetectorRef,
         private _createMemberService: CreateMemberService
     ) {
         this.init();
@@ -57,7 +56,7 @@ export class CreateMemberComponent {
 
         if (this.createMemberHelper.id) {
             this.viewHelper.loading = true;
-            firstValueFrom(this._createMemberService.getMember(this.createMemberHelper.id))
+            firstValueFrom(this._createMemberService.getMemberById(this.createMemberHelper.id))
                 .then((res: CreateMemberDto) => {
                     this.setForm(res);
                     // this.postResponse = res;

@@ -14,8 +14,7 @@ import { GetMemberDto } from 'app/modal/member/get-member.dto';
 export class MemberService {
     private _members: BehaviorSubject<PageableResponse<GetMemberDto> | null> = new BehaviorSubject(null);
 
-    constructor(private _httpClient: HttpClient) {
-    }
+    constructor(private _httpClient: HttpClient) { }
 
     /**
      * Getter for contact
@@ -44,12 +43,20 @@ export class MemberService {
         );
     }
 
+    getMemberById(id: number): Observable<GetMemberDto> {
+        return of(member.content[0]);
+        // return this._httpClient.get<GetMemberDto>(UrlService.getMemberById(id));
+    }
+
     /**
      * Search contacts with given query
      *
      * @param query
      */
     searchContacts(query: string): Observable<PageableResponse<GetMemberDto>> {
+        /**
+         * @todo remove use api insead
+         */
         const memberList: PageableResponse<GetMemberDto> = {
             ...member,
             content: member.content.filter(x => x.displayName.includes(query))

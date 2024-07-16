@@ -9,7 +9,7 @@ export class CreateMemberService {
 
     constructor(private _httpService: HttpClient) { }
 
-    public getMember(id: number): Observable<any> {
+    public getMemberById(id: number): Observable<any> {
         return this._httpService.get(UrlService.getMemberById(id));
     }
 

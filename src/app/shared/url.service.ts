@@ -1,9 +1,16 @@
 export class UrlService {
 
+    /**
+     * FILE
+     */
+
     public static fileUpload() {
         return `${this._baseUrl()}/v1/files/upload`;
     }
 
+    /** 
+     * MEMBER
+     */
     public static getMembers() {
         return `${this._baseUrl()}/v1/members`;
     }
@@ -16,6 +23,9 @@ export class UrlService {
         return `${this._baseUrl()}/v1/members/${id}`;
     }
 
+    /**
+     * POST
+     */
     public static getPost(orgId: number) {
         return `${this._baseUrl()}/v1/posts?orgId=${orgId}`;
     }
@@ -24,7 +34,9 @@ export class UrlService {
         return `${this._baseUrl()}/v1/posts`;
     }
 
-
+    /**
+     * BASE
+     */
     private static _baseUrl(): string {
         return 'https://socio01.line.pm/api'
     }
