@@ -92,7 +92,7 @@ export const appRoutes: Route[] = [
             },
             {
                 path: 'about',
-                loadChildren: () => import('app/modules/common/about/about.routes')
+                loadChildren: () => import('app/modules/about/about.routes')
             },
             {
                 path: 'settings',

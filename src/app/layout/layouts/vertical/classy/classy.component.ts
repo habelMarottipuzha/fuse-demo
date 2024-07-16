@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {Location} from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { FuseFullscreenComponent } from '@fuse/components/fullscreen';
 import { FuseLoadingBarComponent } from '@fuse/components/loading-bar';
 import {
@@ -21,6 +22,7 @@ import { SearchComponent } from 'app/layout/common/search/search.component';
 import { ShortcutsComponent } from 'app/layout/common/shortcuts/shortcuts.component';
 import { UserComponent } from 'app/layout/common/user/user.component';
 import { Subject, takeUntil } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'classy-layout',
@@ -41,6 +43,7 @@ import { Subject, takeUntil } from 'rxjs';
         MessagesComponent,
         RouterOutlet,
         QuickChatComponent,
+        MatTooltipModule
     ],
 })
 export class ClassyLayoutComponent implements OnInit, OnDestroy {
@@ -53,13 +56,12 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
      * Constructor
      */
     constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _router: Router,
+        private _location: Location,
         private _navigationService: NavigationService,
         private _userService: UserService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fuseNavigationService: FuseNavigationService
-    ) {}
+    ) { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -132,5 +134,9 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
             // Toggle the opened status
             navigation.toggle();
         }
+    }
+
+    back() {
+        this._location.back();
     }
 }
