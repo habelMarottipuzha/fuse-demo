@@ -29,7 +29,6 @@ import { GetMemberDto } from 'app/modal/member/get-member.dto';
 })
 export class MemberListComponent implements OnInit, OnDestroy {
 
-    public memberCount: number = 0;
     public selectedContact: GetMemberDto;
     public members$: Observable<PageableResponse<GetMemberDto>>;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -37,23 +36,11 @@ export class MemberListComponent implements OnInit, OnDestroy {
 
     constructor(
         private _memberService: MemberService,
-        private _changeDetectorRef: ChangeDetectorRef,
     ) { }
 
     ngOnInit(): void {
         this._memberService.getMembers().subscribe();
         this.members$ = this._memberService.members$;
-
-        this._memberService.members$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((member: PageableResponse<GetMemberDto>) => {
-
-                // Update the counts
-                this.memberCount = member.content?.length ?? 0;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
 
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges

@@ -1,5 +1,4 @@
 import {
-    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
@@ -13,9 +12,9 @@ import { FuseCardComponent } from '@fuse/components/card';
 import { MaterialModule } from 'app/shared/material.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { PostService } from './post.service';
-import { BehaviorSubject, catchError, firstValueFrom, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, of } from 'rxjs';
 import { PostTypeEnum, PostVisibilityEnum } from 'app/modal/post/post-enum';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CreatePostDto, Url } from 'app/modal/post/create-post.dto';
 import { MatDialog } from '@angular/material/dialog';
 import { YoutubeLinkComponent } from './youtube-link-popup/youtube-link.component';
@@ -48,7 +47,7 @@ import { VideoEmbeddedComponent } from './video-embedded/video-embedded.componen
     ],
     providers: [PostService]
 })
-export class PostsComponent implements AfterViewInit {
+export class PostsComponent {
     numberOfPosts: any = {};
     selectedFilter: string = 'post';
     createPostForm: FormGroup;
@@ -108,7 +107,6 @@ export class PostsComponent implements AfterViewInit {
             }),
             expireOn: new FormControl(''),
         });
-        console.log(this.createPostForm.value);
 
         this._getPost(1);
 
@@ -137,15 +135,6 @@ export class PostsComponent implements AfterViewInit {
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * After view init
-     */
-    ngAfterViewInit(): void {
-
-        // Filter the posts for the first time
-        // this._filterPosts();
-    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods

@@ -29,9 +29,7 @@ export class FileUploadService {
 
   public imageUploadHelper$ = new BehaviorSubject<UploadHelper>({});
 
-  constructor(private http: HttpClient) {
-  }
-
+  constructor(private _http: HttpClient) { }
 
   upload(images: File[], type: FileUploadType) {
     const fd = new FormData();
@@ -40,7 +38,7 @@ export class FileUploadService {
       fd.append('file', image, image.name);
     }
 
-    this.http.post(
+    this._http.post(
       `${UrlService.fileUpload()}`,
       fd,
       {
