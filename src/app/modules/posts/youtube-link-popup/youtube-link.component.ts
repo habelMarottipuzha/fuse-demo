@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, Inject, signal } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
-import { MatDialogTitle, MatDialogContent, MAT_DIALOG_DATA, MatDialogModule, MatDialogActions, MatDialogRef } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Url } from "app/modal/post/create-post.dto";
 import { PostTypeEnum } from "app/modal/post/post-enum";
 import { MaterialModule } from "app/shared/material.module";
+import { UtilService } from "app/shared/services/util.service";
 import { SharedModule } from "app/shared/shared.module";
 
 @Component({
@@ -67,5 +67,31 @@ export class YoutubeLinkComponent {
 
     getUrl(url: string) {
         return this._domSanitizer.bypassSecurityTrustResourceUrl(url)
+    }
+
+    isValidLink(url: string): {
+        valid: boolean
+        isUrlCorrect: boolean
+        isValid: boolean
+        isEmbeded: boolean
+    } {
+        try {
+            new URL(url);
+            const isValid = UtilService.urlCheck(url);
+            const isEmbeded = url.includes('embed');
+            return {
+                valid: isValid && isEmbeded,
+                isUrlCorrect: true,
+                isValid,
+                isEmbeded
+            };
+        } catch (error) {
+            return {
+                valid: false,
+                isUrlCorrect: false,
+                isValid: false,
+                isEmbeded: false
+            };
+        }
     }
 }

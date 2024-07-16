@@ -8,6 +8,14 @@ export class UrlService {
         return `${this._baseUrl()}/v1/files/upload`;
     }
 
+    /**
+     * ORGANIZATION
+     */
+
+    public static getOrganizationById(orgId: number) {
+        return `${this._baseUrl}/v1/organisations/profile/${orgId}`
+    }
+
     /** 
      * MEMBER
      */

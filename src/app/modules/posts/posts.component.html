@@ -17,7 +17,6 @@
     <div class="flex-auto p-6 sm:p-10">
 
         <div class="w-full">
-            <!-- <div class="flex flex-wrap items-start w-full max-w-400 -m-4"> -->
             <!-- Card #58 -->
             <fuse-card [class.pointer-events-none]="viewHelper.submitting"
                 class="flex flex-col max-w-140 w-full p-6 sm:p-8 pb-6 filter-post">
@@ -45,7 +44,7 @@
                     <div class="flex items-center mt-6 sm:mt-8 -mx-3">
                         <button type="button" [matMenuTriggerFor]="postCardMenu01" class="px-3 mr-1" mat-button>
                             <mat-icon [svgIcon]="'heroicons_solid:lock-closed'" class="icon-size-5 mr-2"></mat-icon>
-                            <span>{{getVisibility | titlecase}}</span>
+                            <span>&nbsp;{{getVisibility | titlecase}}</span>
                         </button>
                         <mat-menu #postCardMenu01="matMenu">
                             <button (click)="setVisibilityItems(v.value)" *ngFor="let v of getVisibilityEnum | keyvalue"
@@ -53,7 +52,7 @@
                                 <span class="flex items-center">
                                     <mat-icon [svgIcon]="'heroicons_solid:user-circle'"
                                         class="icon-size-5 mr-3"></mat-icon>
-                                    <span>{{v.value | titlecase}}</span>
+                                    <span>&nbsp;{{v.value | titlecase}}</span>
                                 </span>
                             </button>
                         </mat-menu>
@@ -61,24 +60,24 @@
                         <button (click)="enterYoutubeLink()" [matBadge]="youtubeUrl" [matBadgeHidden]="!youtubeUrl"
                             type="button" class="px-3 mr-1" mat-button>
                             <mat-icon [svgIcon]="'heroicons_solid:video-camera'" class="icon-size-5 mr-2"></mat-icon>
-                            <span>Youtube Link</span>
+                            <span>&nbsp;Youtube Link</span>
                         </button>
 
                         <button (click)="photoUpload.click()" [matBadge]="images?.length"
                             [matBadgeHidden]="!images?.length" type="button" class="px-3 mr-1" mat-button>
                             <mat-icon [svgIcon]="'heroicons_solid:photo'" class="icon-size-5 mr-2"></mat-icon>
-                            <span>Photo</span>
+                            <span>&nbsp;Photo</span>
                         </button>
 
                         <input #photoUpload [ngModelOptions]="{standalone: true}" [(ngModel)]="imageFile" type="file"
                             class="file-upload hidden" (change)="addFile($event)">
                         <button disabled type="button" class="px-3 mr-1 hidden sm:inline-flex" mat-button>
                             <mat-icon [svgIcon]="'heroicons_solid:users'" class="icon-size-5 mr-2"></mat-icon>
-                            <span>Tag members</span>
+                            <span>&nbsp;Tag members</span>
                         </button>
                         <button [disabled]="true" type="button" class="px-3 mr-1 hidden sm:inline-flex" mat-button>
                             <mat-icon [svgIcon]="'heroicons_solid:map-pin'" class="icon-size-5 mr-2"></mat-icon>
-                            <span>Location</span>
+                            <span>&nbsp;Location</span>
                         </button>
                     </div>
                     <div *ngIf="images?.length" class="flex flex-wrap wrapper mt-3">

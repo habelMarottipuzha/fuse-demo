@@ -1,35 +1,38 @@
-<div mat-dialog-title class="text-lg">Video link</div>
+<div mat-dialog-title class="text-xl font-semibold">Add youtube video link</div>
 <mat-dialog-content>
     <ng-container *ngFor="let v of data; let index = index;">
-        <div *ngIf="v.type === getPostTypeEnum.VIDEO_EMBED" class="relative pt-15">
-            <button type="button" class="remove-icon" mat-icon-button (click)="remove(index)">
-                <mat-icon>delete</mat-icon>
-            </button>
-            <mat-form-field class="w-full">
-                <mat-label>Enter Any comment</mat-label>
-                <input matInput [(ngModel)]="v.name" />
-            </mat-form-field>
-            <mat-form-field class="w-full">
+        <div *ngIf="v.type === getPostTypeEnum.VIDEO_EMBED" class="flex justify-between items-center pt-15">
+
+            <mat-form-field class="w-5/6">
                 <mat-label>Enter Video Link</mat-label>
                 <input matInput [(ngModel)]="v.link" required />
+                <mat-hint>embed key need</mat-hint>
 
-                @if (v.link && !v.link?.includes('youtube')) {
-                <mat-error>Valid youtube link is needed *</mat-error>
+                @if (v.link && !isValidLink(v.link).valid) {
+                <mat-error>Valid youtube link is needed</mat-error>
                 }
             </mat-form-field>
-            @if (v.link && v.link?.includes('youtube')) {
+            <div class="w-1/6 text-center"> 
+                <button type="button" mat-icon-button (click)="remove(index)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            @if (v.link && isValidLink(v.link).valid) {
             <iframe allow="picture-in-picture" allowfullscreen class="video" frameborder="0" [src]="getUrl(v.link)"
                 title="YouTube video player"></iframe>
-            } @else {
-            Please provide a vaild youtube url
+            } @else if(v.link) {
+            <div class="text-red-600">Please provide a vaild youtube url</div>
             }
         </div>
     </ng-container>
-    <div>
-        <button class="float-right" mat-button (click)="add()">Add</button>
+    <div class="text-right">
+        <button color="primary" mat-flat-button (click)="add()">Add new link</button>
     </div>
 </mat-dialog-content>
+<hr class="mx-2">
 <mat-dialog-actions>
-    <button mat-button (click)="cancel()">Close</button>
-    <button mat-button color="primary" [mat-dialog-close]="data">Submit</button>
+    <div class="text-right w-full">
+        <button mat-flat-button (click)="cancel()">Close</button>
+        <button mat-flat-button color="primary" [mat-dialog-close]="data">Submit</button>
+    </div>
 </mat-dialog-actions>

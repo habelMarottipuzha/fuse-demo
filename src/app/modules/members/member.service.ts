@@ -44,8 +44,8 @@ export class MemberService {
     }
 
     getMemberById(id: number): Observable<GetMemberDto> {
-        return of(member.content[0]);
-        // return this._httpClient.get<GetMemberDto>(UrlService.getMemberById(id));
+        // return of(member.content[0]);
+        return this._httpClient.get<GetMemberDto>(UrlService.getMemberById(id));
     }
 
     /**

@@ -1,6 +1,6 @@
 <ng-container *ngFor="let v of getEmbededVideoList.urls;">
     @if (v.link) {
-    <iframe allow="picture-in-picture" allowfullscreen class="video w-full" frameborder="0" [src]="getUrl(v.link)"
+    <iframe allow="picture-in-picture" allowfullscreen class="video w-full h-80" frameborder="0" [src]="getUrl(v.link)"
         title="YouTube video player"></iframe>
     }
 </ng-container>

@@ -2,10 +2,6 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    ElementRef,
-    QueryList,
-    Renderer2,
-    ViewChildren,
     ViewEncapsulation
 } from '@angular/core';
 import { FuseCardComponent } from '@fuse/components/card';
@@ -18,7 +14,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CreatePostDto, Url } from 'app/modal/post/create-post.dto';
 import { MatDialog } from '@angular/material/dialog';
 import { YoutubeLinkComponent } from './youtube-link-popup/youtube-link.component';
-import { FileUploadService, FileUploadType, ImageStatus, UploadHelper } from 'app/shared/services/file-upload.service';
+import {
+    FileUploadService,
+    FileUploadType,
+    ImageStatus,
+    UploadHelper
+} from 'app/shared/services/file-upload.service';
 import { GetPostDto } from 'app/modal/post/get-post.dto';
 import { PageableResponse } from 'app/modal/pagable-response.dto';
 import { DateAgoPipe } from 'app/shared/pipes/date-age.pipe';
@@ -48,23 +49,18 @@ import { VideoEmbeddedComponent } from './video-embedded/video-embedded.componen
     providers: [PostService]
 })
 export class PostsComponent {
-    numberOfPosts: any = {};
-    selectedFilter: string = 'post';
-    createPostForm: FormGroup;
-
-    imageFile = null;
-    fileList: File[] = [];
-    fileListASDataUrl: any[] = [];
-    imageUploadHelper$: BehaviorSubject<UploadHelper>;
-    uploadHelper: UploadHelper;
-    viewHelper = {
+    public numberOfPosts: any = {};
+    public createPostForm: FormGroup;
+    public imageFile = null;
+    public fileList: File[] = [];
+    public fileListASDataUrl: any[] = [];
+    public imageUploadHelper$: BehaviorSubject<UploadHelper>;
+    public uploadHelper: UploadHelper;
+    public postResponse: PageableResponse<GetPostDto>;
+    public viewHelper = {
         submitting: false,
         loading: false,
     }
-
-    postResponse: PageableResponse<GetPostDto>;
-
-    @ViewChildren(FuseCardComponent, { read: ElementRef }) private _fusePosts: QueryList<ElementRef>;
 
     public get getVisibilityEnum(): typeof PostVisibilityEnum {
         return PostVisibilityEnum;
@@ -87,7 +83,6 @@ export class PostsComponent {
      * Constructor
      */
     constructor(
-        private _renderer2: Renderer2,
         private _postService: PostService,
         private _cdRef: ChangeDetectorRef,
         private _dialog: MatDialog,
@@ -139,7 +134,7 @@ export class PostsComponent {
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
-    public createPost(uploadedFiles: Url[]) {
+    public createPost(uploadedImages: Url[]) {
         const isValid = this.createPostForm.valid;
         if (isValid) {
             const d: CreatePostDto = this.createPostForm.value;
@@ -147,7 +142,7 @@ export class PostsComponent {
                 ...d,
                 urls: [
                     ...d?.urls ?? [],
-                    ...uploadedFiles
+                    ...uploadedImages
                 ]
             };
 
@@ -156,6 +151,8 @@ export class PostsComponent {
                     this.fileList = [];
                     this.fileListASDataUrl = [];
                     this.createPostForm.reset();
+                    this._getPost(1);
+                    this._cdRef.markForCheck();
                 })
                 .catch(x => console.log()/**@todo handle error */)
                 .finally(() => {
@@ -178,12 +175,17 @@ export class PostsComponent {
          * - @var imageUploadHelper$ will trigger
          */
         this.viewHelper.submitting = true;
-        this._fileUploadService.upload(this.fileList, FileUploadType.IMAGE);
+        if (this.fileList?.length) {
+            this._fileUploadService.upload(this.fileList, FileUploadType.IMAGE);
+        } else {
+            this.createPost([]);
+        }
     }
 
     public enterYoutubeLink() {
         this._dialog.open(YoutubeLinkComponent, {
-            data: this.createPostForm.get('urls').value || []
+            data: this.createPostForm.get('urls').value || [],
+            width: "500px"
         }).afterClosed().subscribe(result => {
             this.createPostForm.patchValue({ urls: result });
             this._cdRef.markForCheck();
@@ -227,6 +229,7 @@ export class PostsComponent {
         this.viewHelper.loading = true;
         firstValueFrom(this._postService.getPost(orgId))
             .then((res: PageableResponse<GetPostDto>) => {
+                // this.postResponse = { ...res, content: res.content.filter(x => x.id === 329) };
                 this.postResponse = res;
                 this._cdRef.markForCheck();
             })
