@@ -7,6 +7,7 @@ import { UrlService } from 'app/shared/url.service';
 import { member } from 'app/dummy/member';
 import { PageableResponse } from 'app/modal/pagable-response.dto';
 import { GetMemberDto } from 'app/modal/member/get-member.dto';
+import { MemberType } from 'app/modal/member/member-enum';
 
 @Injectable({
     providedIn: 'root'
@@ -28,6 +29,7 @@ export class MemberService {
      */
     getMembers(query?: { [key: string]: any }): Observable<PageableResponse<GetMemberDto>> {
         const queryP = new URLSearchParams({
+            type: MemberType.MEMBER,
             sort: JSON.stringify([{
                 direction: 'asc',
                 property: 'displayName'
@@ -37,8 +39,12 @@ export class MemberService {
         const url = `${UrlService.getMembers()}?${queryP}`
         // Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
         return this._httpClient.get<PageableResponse<GetMemberDto>>(url).pipe(
-            tap((contacts) => {
-                this._members.next(contacts);
+            tap((res) => {
+                const sortedResponse = {
+                    ...res,
+                    content: res.content.sort((a, b) => a.displayName.localeCompare(b.displayName))
+                }
+                this._members.next(sortedResponse);
             })
         );
     }
@@ -59,7 +65,9 @@ export class MemberService {
          */
         const memberList: PageableResponse<GetMemberDto> = {
             ...member,
-            content: member.content.filter(x => x.displayName.includes(query))
+            content: member.content.filter(x => x.displayName
+                .includes(query))
+                .sort((a, b) => a.displayName.localeCompare(b.displayName)) as GetMemberDto[]
         }
         return of(memberList)
             .pipe(tap((res: PageableResponse<GetMemberDto>) => this._members.next(res)));

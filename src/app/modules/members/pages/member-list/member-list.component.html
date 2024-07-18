@@ -10,8 +10,8 @@
             <div>
                 <div class="text-4xl font-extrabold tracking-tight leading-none">Members</div>
                 <div class="ml-0.5 font-medium text-secondary" *ngIf="members$ | async as members">
-                    <ng-container *ngIf="members?.totalElements > 0">
-                        {{members?.totalElements}}
+                    <ng-container *ngIf="members?.content?.length > 0">
+                        {{members?.content.length}}
                     </ng-container>
                     {{members?.totalElements | i18nPlural: {
                     '=0' : 'No members',
