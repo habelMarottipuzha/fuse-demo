@@ -19,11 +19,11 @@
         </div>
         <!-- User -->
         <div class="flex w-full flex-col items-center p-4">
+            @if (user$ | async; as user) {
             <div class="relative h-24 w-24">
-                @if (user.avatar) {
-                <img class="h-full w-full rounded-full" [src]="user.avatar" alt="User avatar" />
-                }
-                @if (!user.avatar) {
+                @if (user.picture) {
+                <img class="h-full w-full rounded-full" [src]="user.picture" alt="User avatar" />
+                } @else {
                 <mat-icon class="icon-size-24" [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
                 }
             </div>
@@ -37,6 +37,7 @@
                     {{ user.email }}
                 </div>
             </div>
+            }
         </div>
     </ng-container>
     <!-- Navigation footer hook -->
@@ -58,7 +59,7 @@
         </button>
         <!-- Components -->
         <div class="ml-auto flex items-center space-x-0.5 pl-2 sm:space-x-2">
-            
+
             <button mat-icon-button [matTooltip]="'Click for back'" (click)="back()">
                 <mat-icon [svgIcon]="'heroicons_outline:arrow-left'"></mat-icon>
             </button>

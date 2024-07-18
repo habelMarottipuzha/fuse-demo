@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationConfig, inject } from '@angular/core';
 import { LuxonDateAdapter } from '@angular/material-luxon-adapter';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
@@ -17,12 +17,63 @@ import { provideIcons } from 'app/core/icons/icons.provider';
 import { mockApiServices } from 'app/mock-api';
 import { firstValueFrom } from 'rxjs';
 import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader';
+import { authHttpInterceptorFn, provideAuth0 } from '@auth0/auth0-angular';
+const config = {
+    "domain": "https://socio01.eu.auth0.com/",
+    "clientId": "aMVGJKhm1SmRruk1FRj8Q1DBUkPNooEr",
+    "authorizationParams": {
+        "audience": "https://socio01.eu.auth0.com/api/v2/",
+        "redirect_uri": "/posts"
+    },
+    "apiUri": "http://localhost:3001",
+    "appUri": "http://localhost:4200",
+    "errorPath": "/error"
+};
+
+const { domain, clientId, authorizationParams: { audience }, apiUri, errorPath } = config as {
+    domain: string;
+    clientId: string;
+    authorizationParams: {
+        audience?: string;
+    },
+    apiUri: string;
+    errorPath: string;
+};
+
+export const env = {
+    production: false,
+    auth: {
+        domain,
+        clientId,
+        authorizationParams: {
+            ...(audience && audience !== 'YOUR_API_IDENTIFIER' ? { audience } : null),
+            redirect_uri: window.location.origin,
+        },
+        errorPath,
+    },
+    httpInterceptor: {
+        allowedList: [`${apiUri}/*`],
+    },
+};
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        
+
         provideAnimations(),
-        provideHttpClient(),
+        provideHttpClient(withInterceptors([authHttpInterceptorFn])),
+        // provideAuth0({
+        //     ...env.auth,
+        //     httpInterceptor: {
+        //         ...env.httpInterceptor,
+        //     },
+        // }),
+        provideAuth0({
+            domain: 'socio01.eu.auth0.com',
+            clientId: 'aMVGJKhm1SmRruk1FRj8Q1DBUkPNooEr',
+            authorizationParams: {
+                redirect_uri: window.location.origin
+            }
+        }),
         provideRouter(
             appRoutes,
             withPreloading(PreloadAllModules),

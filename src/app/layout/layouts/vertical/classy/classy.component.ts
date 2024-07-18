@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import {Location} from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterOutlet } from '@angular/router';
@@ -12,8 +12,6 @@ import {
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { NavigationService } from 'app/core/navigation/navigation.service';
 import { Navigation } from 'app/core/navigation/navigation.types';
-import { UserService } from 'app/core/user/user.service';
-import { User } from 'app/core/user/user.types';
 import { LanguagesComponent } from 'app/layout/common/languages/languages.component';
 import { MessagesComponent } from 'app/layout/common/messages/messages.component';
 import { NotificationsComponent } from 'app/layout/common/notifications/notifications.component';
@@ -21,8 +19,10 @@ import { QuickChatComponent } from 'app/layout/common/quick-chat/quick-chat.comp
 import { SearchComponent } from 'app/layout/common/search/search.component';
 import { ShortcutsComponent } from 'app/layout/common/shortcuts/shortcuts.component';
 import { UserComponent } from 'app/layout/common/user/user.component';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { User } from '@auth0/auth0-angular';
+import { AuthenicationService } from 'app/shared/services/auth-service';
 
 @Component({
     selector: 'classy-layout',
@@ -43,13 +43,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MessagesComponent,
         RouterOutlet,
         QuickChatComponent,
-        MatTooltipModule
+        MatTooltipModule,
+        CommonModule
     ],
 })
 export class ClassyLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;
     navigation: Navigation;
-    user: User;
+    user$: Observable<User>
+
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -58,10 +60,12 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
     constructor(
         private _location: Location,
         private _navigationService: NavigationService,
-        private _userService: UserService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fuseNavigationService: FuseNavigationService
-    ) { }
+        private _fuseNavigationService: FuseNavigationService,
+        private _auth: AuthenicationService
+    ) {
+        this.user$ = this._auth.user$;
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -89,12 +93,6 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
                 this.navigation = navigation;
             });
 
-        // Subscribe to the user service
-        this._userService.user$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((user: User) => {
-                this.user = user;
-            });
 
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
