@@ -18,15 +18,17 @@ import { mockApiServices } from 'app/mock-api';
 import { firstValueFrom } from 'rxjs';
 import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader';
 import { authHttpInterceptorFn, provideAuth0 } from '@auth0/auth0-angular';
+
+const isLocal = window.location.origin.includes('localhost');
 const config = {
     "domain": "https://socio01.eu.auth0.com/",
     "clientId": "aMVGJKhm1SmRruk1FRj8Q1DBUkPNooEr",
     "authorizationParams": {
         "audience": "https://socio01.eu.auth0.com/api/v2/",
-        "redirect_uri": "/posts"
+        "redirect_uri": isLocal ? "/posts" : "https://socio-org.github.io/admin-dashboard"
     },
     "apiUri": "http://localhost:3001",
-    "appUri": "http://localhost:4200",
+    "appUri": isLocal ? "http://localhost:4200" : "https://socio-org.github.io/admin-dashboard",
     "errorPath": "/error"
 };
 
