@@ -18,6 +18,7 @@ import { mockApiServices } from 'app/mock-api';
 import { firstValueFrom } from 'rxjs';
 import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader';
 import { authHttpInterceptorFn, provideAuth0 } from '@auth0/auth0-angular';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 const isLocal = window.location.origin.includes('localhost');
 const config = {
@@ -79,9 +80,9 @@ export const appConfig: ApplicationConfig = {
         provideRouter(
             appRoutes,
             withPreloading(PreloadAllModules),
-            withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })
+            withInMemoryScrolling({ scrollPositionRestoration: 'enabled' }),
         ),
-
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
         // Material Date Adapter
         {
             provide: DateAdapter,

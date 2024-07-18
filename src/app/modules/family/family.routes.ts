@@ -16,15 +16,17 @@ export default [
         children: [
             {
                 path: '',
-                component: FamilyListComponent, resolve: {
-                    items: FamilyItemsResolver
-                },
+                component: FamilyListComponent,
+                // resolve: {
+                //     items: FamilyItemsResolver
+                // },
                 children: [
                     {
                         path: ':id',
-                        component: FamilyDetailsComponent, resolve: {
-                            item: FamilyItemResolver
-                        },
+                        component: FamilyDetailsComponent,
+                        // resolve: {
+                        //     item: FamilyItemResolver
+                        // },
                         canDeactivate: [CanDeactivateFamilyDetails]
                     }
                 ]
