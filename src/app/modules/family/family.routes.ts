@@ -6,6 +6,7 @@ import { Routes } from '@angular/router';
 import { FamilyListComponent } from './pages/family-list/family-list.component';
 import { FamilyComponent } from './family.component';
 import { FamilyDetailsComponent } from './pages/details/family-details.component';
+import { CreateMemberComponent } from 'app/shared/components/create-member/create-member.component';
 
 export default [
     {
@@ -15,6 +16,10 @@ export default [
             {
                 path: 'list',
                 component: FamilyListComponent,
+            },
+            {
+                path: 'create',
+                component: CreateMemberComponent
             },
             {
                 path: ':id',

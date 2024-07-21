@@ -6,6 +6,9 @@ import { MemberService } from 'app/shared/data-service/member.service';
 import { ActivatedRoute } from '@angular/router';
 import { GetMemberDto } from 'app/modal/member/get-member.dto';
 import { PageableResponse } from 'app/modal/pagable-response.dto';
+import { LoadingWidgetComponent } from 'app/shared/components/loading-widget/loading-widget.component';
+import { UtilService } from 'app/shared/services/util.service';
+import { FuseCardComponent } from '@fuse/components/card';
 
 @Component({
     selector: 'app-details',
@@ -14,15 +17,25 @@ import { PageableResponse } from 'app/modal/pagable-response.dto';
     standalone: true,
     imports: [
         SharedModule,
-        MaterialModule
+        MaterialModule,
+
+        // Component
+        LoadingWidgetComponent,
+        FuseCardComponent
     ]
 })
 export class FamilyDetailsComponent {
     public family: GetMemberDto;
     public members: PageableResponse<GetMemberDto>;
-    public viewHelper = {
+    public viewHelperFamily = {
         submitting: false,
         loading: false,
+        error: false
+    }
+    public viewHelperMemberList = {
+        submitting: false,
+        loading: false,
+        error: false
     }
     /**
      * Constructor
@@ -39,6 +52,13 @@ export class FamilyDetailsComponent {
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 
+    // -----------------------------------------------------------------------------------------------------
+    // @ Private methods
+    // -----------------------------------------------------------------------------------------------------
+
+    imageErrorHandler(event) {
+        return UtilService.imageErrorHandler(event);
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Private methods
@@ -50,32 +70,28 @@ export class FamilyDetailsComponent {
     }
 
     private _getFamily(id: number) {
-        this.viewHelper.loading = true;
+        this.viewHelperFamily.loading = true;
 
         firstValueFrom(this._memberService.getMemberById(Number(id)))
             .then((res: GetMemberDto) => {
                 this.family = res;
                 this._changeDetectorRef.markForCheck();
             })
-            .catch(() => console.log()/**@todo handle error */)
-            .finally(() => {
-                this.viewHelper.loading = false;
-                /** @todo loding can be handled */
-            });
+            .catch(() => this.viewHelperFamily = { ...this.viewHelperFamily, error: true })
+            .finally(() => this.viewHelperFamily.loading = false);
     }
 
     private _getMemberByFamily(id: number) {
-        this.viewHelper.loading = true;
+        this.viewHelperMemberList.loading = true;
 
         firstValueFrom(this._memberService.getMemberParentId(Number(id)))
             .then((res: PageableResponse<GetMemberDto>) => {
+                /** @todo remove */
+                res.content.length = 15;
                 this.members = res;
                 this._changeDetectorRef.markForCheck();
             })
-            .catch(() => console.log()/**@todo handle error */)
-            .finally(() => {
-                this.viewHelper.loading = false;
-                /** @todo loding can be handled */
-            });
+            .catch(() => this.viewHelperMemberList = { ...this.viewHelperMemberList, error: true })
+            .finally(() => this.viewHelperMemberList.loading = false);
     }
 }

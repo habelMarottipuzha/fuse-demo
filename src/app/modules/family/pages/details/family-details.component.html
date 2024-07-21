@@ -1,80 +1,213 @@
-<div class="flex flex-col flex-auto p-6 md:p-8">
+@if (!viewHelperFamily.loading) {
+<div class="flex flex-col flex-auto mb-10">
 
-    <!-- Close button -->
-    <div class="flex items-center justify-end">
-        <button [routerLink]="['../']" mat-icon-button>
-            <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
-        </button>
-    </div>
+    <!-- Header -->
+    <div class="flex flex-col shadow bg-card">
 
-    <!-- Preview -->
-    <div class="aspect-w-9 aspect-h-6 mt-8">
-        <div class="flex items-center justify-center border rounded-lg bg-gray-50 dark:bg-card">
-            <img alt="Family" class="object-cover" src="images/profile/family-mock.webp">
+        <!-- Cover image -->
+        <div>
+            <img class="h-40 lg:h-80 object-cover" src="images/cards/01-320x200.jpg" alt="Cover image">
         </div>
-    </div>
-    <!-- Name & Type -->
-    <div class="flex flex-col items-start mt-8">
-        <div class="text-xl font-medium">{{family.displayName}}</div>
-        <div class="text-l text-hint"> {{family.street}} {{family.city}}</div>
-    </div>
 
-    <!-- Information -->
-    <div class="text-lg font-medium mt-8">Members</div>
-    <div class="flex flex-col mt-4 border-t border-b divide-y font-medium">
+        <!-- User info -->
+        <div class="flex flex-col flex-0 lg:flex-row items-center max-w-5xl w-full mx-auto px-8 lg:h-18 bg-card">
 
-        <div class="flex items-center justify-between ">
-            <div class="w-full">
-                <ng-container *ngFor="let member of members.content">
-                    <div class="row">
-                        <!-- Contact -->
-                        <a [routerLink]="['./', member.id]"
-                            class="z-20 flex items-center justify-between px-6 py-4 md:px-8 cursor-pointer border-b">
-                            <!--                            <ng-container *ngIf="member.avatar">-->
-                            <!--                                <img-->
-                            <!--                                    class="object-cover w-full h-full"-->
-                            <!--                                    [src]="member.avatar"-->
-                            <!--                                    alt="Contact avatar"/>-->
-                            <!--                            </ng-container>-->
-                            <!--                            <ng-container *ngIf="!member.avatar">-->
-                            <!--                                <div class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">-->
-                            <!--                                    {{member.name.charAt(0)}}-->
-                            <!--                                </div>-->
-                            <!--                            </ng-container>-->
-                            <div class="min-w-0 ml-4">
-                                <div class="font-medium leading-5 truncate">{{member.name}}</div>
-                                <div class="leading-5 truncate text-secondary text-hint">{{member.relation}}</div>
-                            </div>
-                            <div class="min-w-0 ml-4 ">
-                                <button [color]="'primary'" [routerLink]="['member', member.id]" class="flex-auto"
-                                    mat-flat-button>View
-                                </button>
-                            </div>
-                        </a>
-                    </div>
-                </ng-container>
+            <!-- Avatar -->
+            <div class="-mt-26 lg:-mt-22 rounded-full">
+                @if(family.imageLink){
+                <img class="w-32 h-32 rounded-full ring-4 ring-bg-card" [src]="family.imageLink" alt="User avatar">
+                }@else {
+                <div
+                    class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                    {{(member.displayName || member.firstName).charAt(0)}}
+                </div>
+                }
             </div>
-        </div>
 
-        <div class="text-lg font-medium mt-8">About</div>
-        <div class="flex items-center justify-between  py-3">
-            <div>About</div>
-        </div>
-        <div class="text-lg font-medium mt-8">Details</div>
-        <div class="flex items-center justify-between py-3">
-            <div class="text-secondary">Division</div>
-            <div>sub</div>
-        </div>
-        <div class="flex items-center justify-between py-3">
-            <div class="text-secondary">Sub Division</div>
-            <div>subDivisionId</div>
-        </div>
-        <div class="flex items-center justify-between py-3">
-            <div class="text-secondary">Member Since</div>
-            <div>memberSince</div>
+            <!-- Details -->
+            <div class="flex flex-col items-center lg:items-start mt-4 lg:mt-0 lg:ml-8">
+                <div class="text-lg font-bold leading-none">{{family.displayName}}</div>
+                <div class="text-secondary flex align-items-center">
+                    <mat-icon class="mat-icon-sm" svgIcon="heroicons_solid:map-pin"></mat-icon>
+                    {{family.street}} {{family.city}}
+                </div>
+            </div>
+
+            <!-- Menu -->
+            <div class="flex items-center mt-8 mb-4 lg:m-0 lg:ml-auto space-x-6">
+                <a [href]="'tel:' + family.mobile">
+                    <button mat-icon-button>
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:phone'"></mat-icon>
+                    </button>
+                </a>
+                <a [href]="'mailto:' + family.email">
+                    <button mat-icon-button [disabled]="!family.email">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:envelope'"></mat-icon>
+                    </button>
+                </a>
+            </div>
+
         </div>
 
     </div>
 
+    <div class="grid grid-cols-3 gap-4 p-6">
+
+        <!-- Gallery -->
+        <fuse-card class="flex flex-col max-w-80 w-full px-8 pt-6 pb-4 mt-3">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-semibold leading-tight">Gallery</div>
+                <div class="-mr-3">
+                    <button mat-icon-button [matMenuTriggerFor]="listCard09Menu">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
+                    </button>
+                    <mat-menu #listCard09Menu="matMenu">
+                        <button mat-menu-item>Add image</button>
+                        <button mat-menu-item>Add video</button>
+                    </mat-menu>
+                </div>
+            </div>
+            <div class="flex flex-col">
+                <div class="flex justify-between mt-6">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/14-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/15-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/16-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/17-640x480.jpg"
+                        alt="Card cover image">
+                </div>
+                <div class="flex justify-between mt-3">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/18-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/19-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/20-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/21-640x480.jpg"
+                        alt="Card cover image">
+                </div>
+                <div class="flex justify-between mt-3">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/22-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/23-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/24-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/25-640x480.jpg"
+                        alt="Card cover image">
+                </div>
+                <div class="flex justify-between mt-3">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/26-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/27-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/28-640x480.jpg"
+                        alt="Card cover image">
+                    <img class="w-14 h-14 rounded object-cover" src="images/cards/29-640x480.jpg"
+                        alt="Card cover image">
+                </div>
+            </div>
+            <div class="flex items-center mt-6 -mx-3">
+                <button class="px-3" mat-button [color]="'primary'" [routerLink]="['./']">
+                    See entire gallery
+                </button>
+            </div>
+        </fuse-card>
+
+        <!-- Groups -->
+        <fuse-card class="flex flex-col max-w-80 w-full mt-3 px-8 pt-6 pb-4 lg:mr-2">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-semibold leading-tight">Groups</div>
+                <div class="-mr-3">
+                    <button mat-icon-button [matMenuTriggerFor]="listCard02Menu">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:ellipsis-vertical'"></mat-icon>
+                    </button>
+                    <mat-menu #listCard02Menu="matMenu">
+                        <button mat-menu-item>Search for groups</button>
+                    </mat-menu>
+                </div>
+            </div>
+            <div class="flex flex-col mt-5">
+                <div class="flex items-center">
+                    <img class="w-14 h-14 mr-4 rounded object-cover" src="images/cards/coffee-shop-01-320x200.jpg"
+                        alt="Card cover image">
+                    <div class="flex flex-col min-w-0">
+                        <div class="font-medium leading-none">The Port Cafe</div>
+                        <div class="text-md truncate leading-none mt-1">Best cafe of the downtown New York</div>
+                        <div class="text-md leading-none text-secondary mt-2">1.2k followers</div>
+                    </div>
+                </div>
+                <div class="flex items-center mt-6">
+                    <img class="w-14 h-14 mr-4 rounded object-cover" src="images/cards/coffee-shop-02-512x512.jpg"
+                        alt="Card cover image">
+                    <div class="flex flex-col min-w-0">
+                        <div class="font-medium leading-none">Design House LLC.</div>
+                        <div class="text-md truncate leading-none mt-1">UI/UX, brand and product design</div>
+                        <div class="text-md leading-none text-secondary mt-2">957 followers</div>
+                    </div>
+                </div>
+                <div class="flex items-center mt-6">
+                    <img class="w-14 h-14 mr-4 rounded object-cover" src="images/cards/coffee-shop-03-320x320.jpg"
+                        alt="Card cover image">
+                    <div class="flex flex-col min-w-0">
+                        <div class="font-medium leading-none">Crax Laser Tag</div>
+                        <div class="text-md truncate leading-none mt-1">30% off with group of 6 people</div>
+                        <div class="text-md leading-none text-secondary mt-2">342 followers</div>
+                    </div>
+                </div>
+                <div class="flex items-center mt-6">
+                    <img class="w-14 h-14 mr-4 rounded object-cover" src="images/cards/sneakers-01-320x200.jpg"
+                        alt="Card cover image">
+                    <div class="flex flex-col min-w-0">
+                        <div class="font-medium leading-none">Roadster Clothing Inc.</div>
+                        <div class="text-md truncate leading-none mt-1">$25 off on orders $500 and over</div>
+                        <div class="text-md leading-none text-secondary mt-2">4.7k followers</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center mt-6 -mx-3">
+                <button class="px-3" mat-button [color]="'primary'" [routerLink]="['./']">
+                    See all groups
+                </button>
+            </div>
+        </fuse-card>
+
+        <!-- Members -->
+        <fuse-card class="col-span-1 col-start-3 flex flex-col max-w-96 w-full mt-3 px-8 pt-6 pb-4">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-semibold leading-tight">Members</div>
+            </div>
+            <div class="flex flex-col mt-5 min-h-64 max-h-96 overflow-y-auto overflow-x-hidden">
+
+                @if (!viewHelperMemberList.loading && !viewHelperMemberList.error) {
+                <div class="flex" *ngFor="let member of members.content" [routerLink]="['/','member', member.id]">
+                    <img class="w-10 h-10 mr-4 rounded-full" [src]="member.imageLink" (error)="imageErrorHandler(event)"
+                        alt="Card cover image">
+                    <div class="flex flex-col min-w-0">
+                        <div class="leading-tight">{{member.displayName || member.firstName}}</div>
+                        <div class="text-md leading-none text-secondary mt-2">Relation</div>
+                    </div>
+                </div>
+                } @else if (viewHelperMemberList.loading) {
+                <loading-widget></loading-widget>
+                } @else if (viewHelperMemberList.error) {
+                <div class="text-secondary flex justify-center">
+                    Error
+                </div>
+                }
+
+
+            </div>
+        </fuse-card>
+    </div>
 
 </div>
+} @else if(viewHelperFamily.loading) {
+<loading-widget></loading-widget>
+} @else if (viewHelperFamily.error) {
+<div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
+    There are no family!
+</div>
+}

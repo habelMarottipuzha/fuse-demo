@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, Input, } from "@angular/core";
 import { Url } from "app/modal/post/create-post.dto";
 import { PostTypeEnum } from "app/modal/post/post-enum";
 import { MaterialModule } from "app/shared/material.module";
+import { UtilService } from "app/shared/services/util.service";
 import { SharedModule } from "app/shared/shared.module";
 
 @Component({
@@ -34,7 +35,7 @@ export class ImageViewerComponent {
     @Input() urls: Url[] = [];
 
     errorHandler(event) {
-        event.target.src = "images/not-found-32x32.png";
+        return UtilService.imageErrorHandler(event);
     }
 
 }

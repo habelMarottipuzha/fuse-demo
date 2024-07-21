@@ -6,6 +6,7 @@ import { MaterialModule } from 'app/shared/material.module';
 import { FuseCardComponent } from '@fuse/components/card';
 import { ActivatedRoute } from '@angular/router';
 import { GetMemberDto } from 'app/modal/member/get-member.dto';
+import { LoadingWidgetComponent } from 'app/shared/components/loading-widget/loading-widget.component';
 
 @Component({
     selector: 'app-member-details',
@@ -17,7 +18,10 @@ import { GetMemberDto } from 'app/modal/member/get-member.dto';
     imports: [
         SharedModule,
         MaterialModule,
-        FuseCardComponent
+
+        // Component
+        FuseCardComponent,
+        LoadingWidgetComponent
     ]
 })
 export class MemberDetailsComponent {
@@ -25,6 +29,7 @@ export class MemberDetailsComponent {
     public viewHelper = {
         submitting: false,
         loading: false,
+        error: false
     }
     constructor(
         private _memberService: MemberService,
@@ -44,11 +49,8 @@ export class MemberDetailsComponent {
                     this.selectedMember = res;
                     this._changeDetectorRef.markForCheck();
                 })
-                .catch(() => console.log()/**@todo handle error */)
-                .finally(() => {
-                    this.viewHelper.loading = false;
-                    /** @todo loding can be handled */
-                });
+                .catch(() => this.viewHelper = { ...this.viewHelper, error: true })
+                .finally(() => this.viewHelper.loading = false);
         }
     }
 }

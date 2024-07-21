@@ -63,10 +63,7 @@ export class CreateMemberComponent {
                     // this._cdRef.markForCheck();
                 })
                 .catch(() => console.log()/**@todo handle error */)
-                .finally(() => {
-                    this.viewHelper.loading = false;
-                    /** @todo loding can be handled */
-                });
+                .finally(() => this.viewHelper.loading = false);
         } else {
             this.setForm({});
         }

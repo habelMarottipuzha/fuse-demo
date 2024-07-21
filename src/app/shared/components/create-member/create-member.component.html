@@ -49,7 +49,7 @@
                     mat-flat-button>
                     <span> &nbsp;&nbsp;Cancel&nbsp;&nbsp; </span>
                 </button>
-                <button type="submit" [disabled]="!createMemberForm.valid"
+                <button type="submit" [disabled]="!createMemberForm.valid || viewHelper.submitting"
                     class="px-3 mr-1 hidden sm:inline-flex float-right" color="primary" mat-flat-button>
                     <span> &nbsp;&nbsp;Create&nbsp;&nbsp; </span>
                 </button>

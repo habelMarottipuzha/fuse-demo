@@ -2,3 +2,11 @@
 /*  @ Import/write your custom styles here.
 /*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
 /* ----------------------------------------------------------------------------------------------------- */
+
+.mat-icon-2x {
+    transform: scale(2) !important;
+}
+
+.mat-icon-sm {
+    transform: scale(0.7) !important;
+}
