@@ -2,9 +2,7 @@
 
     <!-- Close button -->
     <div class="flex items-center justify-end">
-        <button
-            [routerLink]="['../']"
-            mat-icon-button>
+        <button [routerLink]="['../']" mat-icon-button>
             <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
         </button>
     </div>
@@ -12,13 +10,13 @@
     <!-- Preview -->
     <div class="aspect-w-9 aspect-h-6 mt-8">
         <div class="flex items-center justify-center border rounded-lg bg-gray-50 dark:bg-card">
-            <img alt="Family" class="object-cover" src="assets/images/profile/family-mock.webp">
+            <img alt="Family" class="object-cover" src="images/profile/family-mock.webp">
         </div>
     </div>
     <!-- Name & Type -->
     <div class="flex flex-col items-start mt-8">
-        <div class="text-xl font-medium">{{family.name}}</div>
-        <div class="text-l text-hint"> {{family.address}}</div>
+        <div class="text-xl font-medium">{{family.displayName}}</div>
+        <div class="text-l text-hint"> {{family.street}} {{family.city}}</div>
     </div>
 
     <!-- Information -->
@@ -27,11 +25,11 @@
 
         <div class="flex items-center justify-between ">
             <div class="w-full">
-                <ng-container *ngFor="let member of family.members">
+                <ng-container *ngFor="let member of members.content">
                     <div class="row">
                         <!-- Contact -->
                         <a [routerLink]="['./', member.id]"
-                           class="z-20 flex items-center justify-between px-6 py-4 md:px-8 cursor-pointer border-b">
+                            class="z-20 flex items-center justify-between px-6 py-4 md:px-8 cursor-pointer border-b">
                             <!--                            <ng-container *ngIf="member.avatar">-->
                             <!--                                <img-->
                             <!--                                    class="object-cover w-full h-full"-->
@@ -48,31 +46,32 @@
                                 <div class="leading-5 truncate text-secondary text-hint">{{member.relation}}</div>
                             </div>
                             <div class="min-w-0 ml-4 ">
-                                <button [color]="'primary'" [routerLink]="['../../','member', member.id]"
-                                        class="flex-auto" mat-flat-button>View
+                                <button [color]="'primary'" [routerLink]="['member', member.id]" class="flex-auto"
+                                    mat-flat-button>View
                                 </button>
                             </div>
-                        </a></div>
+                        </a>
+                    </div>
                 </ng-container>
             </div>
         </div>
 
         <div class="text-lg font-medium mt-8">About</div>
         <div class="flex items-center justify-between  py-3">
-            <div>{{family.about}}</div>
+            <div>About</div>
         </div>
         <div class="text-lg font-medium mt-8">Details</div>
         <div class="flex items-center justify-between py-3">
             <div class="text-secondary">Division</div>
-            <div>{{family.divisionId}}</div>
+            <div>sub</div>
         </div>
         <div class="flex items-center justify-between py-3">
             <div class="text-secondary">Sub Division</div>
-            <div>{{family.subDivisionId || ''}}</div>
+            <div>subDivisionId</div>
         </div>
         <div class="flex items-center justify-between py-3">
             <div class="text-secondary">Member Since</div>
-            <div>{{family.memberSince}}</div>
+            <div>memberSince</div>
         </div>
 
     </div>

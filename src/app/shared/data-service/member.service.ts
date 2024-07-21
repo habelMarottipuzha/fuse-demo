@@ -53,6 +53,11 @@ export class MemberService {
         return this._httpClient.get<GetMemberDto>(UrlService.getMemberById(id));
     }
 
+    getMemberParentId(id: number): Observable<PageableResponse<GetMemberDto>> {
+        // return of(member.content[0]);
+        return this._httpClient.get<PageableResponse<GetMemberDto>>(UrlService.getMemberParentId(id));
+    }
+
     /**
      * Search contacts with given query
      *

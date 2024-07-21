@@ -33,6 +33,10 @@ export class UrlService {
         return `${this._BASE}/v1/members/${id}`;
     }
 
+    public static getMemberParentId(parentId: number) {
+        return `${this._BASE}/v1/members?parentId=${parentId}`;
+    }
+
     /**
      * POST
      */

@@ -18,7 +18,6 @@ import { mockApiServices } from 'app/mock-api';
 import { firstValueFrom } from 'rxjs';
 import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader';
 import { authHttpInterceptorFn, provideAuth0 } from '@auth0/auth0-angular';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 const isLocal = window.location.origin.includes('localhost');
 const config = {
@@ -64,17 +63,11 @@ export const appConfig: ApplicationConfig = {
 
         provideAnimations(),
         provideHttpClient(withInterceptors([authHttpInterceptorFn])),
-        // provideAuth0({
-        //     ...env.auth,
-        //     httpInterceptor: {
-        //         ...env.httpInterceptor,
-        //     },
-        // }),
         provideAuth0({
             domain: 'socio01.eu.auth0.com',
             clientId: 'aMVGJKhm1SmRruk1FRj8Q1DBUkPNooEr',
             authorizationParams: {
-                redirect_uri: window.location.origin
+                redirect_uri: isLocal ? window.location.origin + "/posts" : window.location.origin + "/admin-dashboard"
             }
         }),
         provideRouter(
@@ -82,7 +75,6 @@ export const appConfig: ApplicationConfig = {
             withPreloading(PreloadAllModules),
             withInMemoryScrolling({ scrollPositionRestoration: 'enabled' }),
         ),
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
         // Material Date Adapter
         {
             provide: DateAdapter,

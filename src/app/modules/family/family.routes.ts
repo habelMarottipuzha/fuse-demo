@@ -5,7 +5,7 @@ import { Routes } from '@angular/router';
  */
 import { FamilyListComponent } from './pages/family-list/family-list.component';
 import { FamilyComponent } from './family.component';
-// import { FamilyDetailsComponent } from './pages/details/family-details.component';
+import { FamilyDetailsComponent } from './pages/details/family-details.component';
 
 export default [
     {
@@ -16,10 +16,10 @@ export default [
                 path: 'list',
                 component: FamilyListComponent,
             },
-            // {
-            //     path: ':id',
-            //     component: FamilyDetailsComponent
-            // }
+            {
+                path: ':id',
+                component: FamilyDetailsComponent
+            }
         ]
     }
 ] as Routes;

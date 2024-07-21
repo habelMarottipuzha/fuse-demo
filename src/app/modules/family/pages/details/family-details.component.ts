@@ -1,12 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { MatDrawerToggleResult } from '@angular/material/sidenav';
-import { Subject } from 'rxjs';
-import { FamilyListComponent } from '../family-list/family-list.component';
-import { FamilyService } from '../../family.service';
-import { Family } from '../../family.model';
-import { takeUntil } from "rxjs/operators";
+import { firstValueFrom } from 'rxjs';
 import { SharedModule } from 'app/shared/shared.module';
 import { MaterialModule } from 'app/shared/material.module';
+import { MemberService } from 'app/shared/data-service/member.service';
+import { ActivatedRoute } from '@angular/router';
+import { GetMemberDto } from 'app/modal/member/get-member.dto';
+import { PageableResponse } from 'app/modal/pagable-response.dto';
 
 @Component({
     selector: 'app-details',
@@ -18,74 +17,65 @@ import { MaterialModule } from 'app/shared/material.module';
         MaterialModule
     ]
 })
-export class FamilyDetailsComponent implements OnInit {
-    family: Family;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+export class FamilyDetailsComponent {
+    public family: GetMemberDto;
+    public members: PageableResponse<GetMemberDto>;
+    public viewHelper = {
+        submitting: false,
+        loading: false,
+    }
     /**
      * Constructor
      */
     constructor(
+        private _memberService: MemberService,
         private _changeDetectorRef: ChangeDetectorRef,
-        private _fileManagerListComponent: FamilyListComponent,
-        private _familyService: FamilyService
+        private _activatedRoute: ActivatedRoute,
     ) {
+        this._init()
     }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * On init
-     */
-    ngOnInit(): void {
-        // Open the drawer
-        this._fileManagerListComponent.matDrawer.open();
-        // Get the item
-        this._familyService.family$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((family: Family) => {
 
-                // Open the drawer in case it is closed
-                // noinspection JSIgnoredPromiseFromCall
-                this._fileManagerListComponent.matDrawer.open();
+    // -----------------------------------------------------------------------------------------------------
+    // @ Private methods
+    // -----------------------------------------------------------------------------------------------------
+    private _init() {
+        const id = this._activatedRoute.snapshot.params.id;
+        this._getFamily(id);
+        this._getMemberByFamily(id);
+    }
 
-                // Get the item
-                this.family = family;
+    private _getFamily(id: number) {
+        this.viewHelper.loading = true;
 
-                // Mark for check
+        firstValueFrom(this._memberService.getMemberById(Number(id)))
+            .then((res: GetMemberDto) => {
+                this.family = res;
                 this._changeDetectorRef.markForCheck();
+            })
+            .catch(() => console.log()/**@todo handle error */)
+            .finally(() => {
+                this.viewHelper.loading = false;
+                /** @todo loding can be handled */
             });
     }
 
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
-    }
+    private _getMemberByFamily(id: number) {
+        this.viewHelper.loading = true;
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Close the drawer
-     */
-    closeDrawer(): Promise<MatDrawerToggleResult> {
-        return this._fileManagerListComponent.matDrawer.close();
-    }
-
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-    trackByFn(index: number, item: any): any {
-        return item.id || index;
+        firstValueFrom(this._memberService.getMemberParentId(Number(id)))
+            .then((res: PageableResponse<GetMemberDto>) => {
+                this.members = res;
+                this._changeDetectorRef.markForCheck();
+            })
+            .catch(() => console.log()/**@todo handle error */)
+            .finally(() => {
+                this.viewHelper.loading = false;
+                /** @todo loding can be handled */
+            });
     }
 }

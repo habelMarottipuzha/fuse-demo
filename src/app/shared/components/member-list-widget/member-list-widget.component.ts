@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, ViewEncapsulation, ChangeDetectionStrategy, Input } from "@angular/core";
+import { RouterModule } from "@angular/router";
 import { GetMemberDto } from "app/modal/member/get-member.dto";
 import { PageableResponse } from "app/modal/pagable-response.dto";
 import { Observable } from "rxjs";
@@ -13,7 +14,8 @@ import { Observable } from "rxjs";
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
     imports:[
-        CommonModule
+        CommonModule,
+        RouterModule
     ]
 })
 export class MemberListWidgetComponent {
