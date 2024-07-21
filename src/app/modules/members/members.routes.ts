@@ -2,7 +2,7 @@ import { MembersComponent } from './members.component';
 import { MemberListComponent } from './pages/member-list/member-list.component';
 import { MemberDetailsComponent } from './pages/member-details/member-details.component';
 import { Routes } from '@angular/router';
-import { CreateMemberComponent } from 'app/shared/components/create-member.component';
+import { CreateMemberComponent } from 'app/shared/components/create-member/create-member.component';
 
 export default [
     {

@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
-import { MemberService } from '../../member.service';
+import { MemberService } from '../../../../shared/data-service/member.service';
 import { SharedModule } from 'app/shared/shared.module';
 import { MaterialModule } from 'app/shared/material.module';
 import { FuseCardComponent } from '@fuse/components/card';
 import { ActivatedRoute } from '@angular/router';
 import { GetMemberDto } from 'app/modal/member/get-member.dto';
-import { Contact } from '../../member.type';
 
 @Component({
     selector: 'app-member-details',
@@ -27,7 +26,6 @@ export class MemberDetailsComponent {
         submitting: false,
         loading: false,
     }
-    public members$: Observable<Contact[]>;
     constructor(
         private _memberService: MemberService,
         private _changeDetectorRef: ChangeDetectorRef,

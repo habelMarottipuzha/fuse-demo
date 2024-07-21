@@ -6,14 +6,7 @@ import { RouterModule } from '@angular/router';
   template: '<router-outlet></router-outlet>',
   styles: [
   ],
-  standalone:true,
-  imports:[RouterModule]
+  standalone: true,
+  imports: [RouterModule]
 })
-export class MembersComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-}
+export class MembersComponent { }

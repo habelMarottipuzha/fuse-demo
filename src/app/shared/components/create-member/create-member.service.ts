@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CreateMemberDto } from "app/modal/member/create-member.dto";
-import { UrlService } from "../url.service";
+import { UrlService } from "../../url.service";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 

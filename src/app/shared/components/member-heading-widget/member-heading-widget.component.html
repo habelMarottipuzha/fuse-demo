@@ -1,0 +1,13 @@
+<div>
+    <div class="text-4xl font-extrabold tracking-tight leading-none">{{title}}</div>
+    <div class="ml-0.5 font-medium text-secondary">
+        <ng-container *ngIf="count > 0">
+            {{count}}
+        </ng-container>
+        {{count | i18nPlural: {
+        '=0' : 'No members',
+        '=1' : 'members',
+        'other': 'members'
+        } }}
+    </div>
+</div>

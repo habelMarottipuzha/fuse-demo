@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Contact } from './member.type';
 import { UrlService } from 'app/shared/url.service';
 import { member } from 'app/dummy/member';
 import { PageableResponse } from 'app/modal/pagable-response.dto';

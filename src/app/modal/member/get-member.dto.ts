@@ -1,3 +1,5 @@
+import { MemberType } from "./member-enum"
+
 export interface GetMemberDto {
     id: number
     createdAt: string
@@ -16,7 +18,7 @@ export interface GetMemberDto {
     city: string
     state: string
     country: string
-    type: string
+    type: MemberType
     parentId: number
     orgId: number
   }

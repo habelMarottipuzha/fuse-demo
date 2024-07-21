@@ -1,6 +1,5 @@
 import {
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
     OnDestroy,
     OnInit,
@@ -9,11 +8,13 @@ import {
 import { FormControl } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { MemberService } from '../../member.service';
+import { MemberService } from '../../../../shared/data-service/member.service';
 import { SharedModule } from 'app/shared/shared.module';
 import { MaterialModule } from 'app/shared/material.module';
 import { PageableResponse } from 'app/modal/pagable-response.dto';
 import { GetMemberDto } from 'app/modal/member/get-member.dto';
+import { MemberListWidgetComponent } from 'app/shared/components/member-list-widget/member-list-widget.component';
+import { MemberHeadingWidgetComponent } from 'app/shared/components/member-heading-widget/member-heading-widget.component';
 
 @Component({
     selector: 'app-member-list',
@@ -24,7 +25,11 @@ import { GetMemberDto } from 'app/modal/member/get-member.dto';
     standalone: true,
     imports: [
         SharedModule,
-        MaterialModule
+        MaterialModule,
+
+        // Component
+        MemberHeadingWidgetComponent,
+        MemberListWidgetComponent
     ]
 })
 export class MemberListComponent implements OnInit, OnDestroy {

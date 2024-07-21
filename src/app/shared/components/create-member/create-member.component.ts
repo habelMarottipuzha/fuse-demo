@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation, ChangeDetectionStrategy } from "@angular/core";
-import { MaterialModule } from "../material.module";
-import { SharedModule } from "../shared.module";
+import { MaterialModule } from "../../material.module";
+import { SharedModule } from "../../shared.module";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FuseCardComponent } from "@fuse/components/card";

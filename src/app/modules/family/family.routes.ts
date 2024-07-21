@@ -5,9 +5,7 @@ import { Routes } from '@angular/router';
  */
 import { FamilyListComponent } from './pages/family-list/family-list.component';
 import { FamilyComponent } from './family.component';
-import { FamilyDetailsComponent } from './pages/details/family-details.component';
-import { FamilyItemResolver, FamilyItemsResolver } from './family.resolvers';
-import { CanDeactivateFamilyDetails } from './family.guards';
+// import { FamilyDetailsComponent } from './pages/details/family-details.component';
 
 export default [
     {
@@ -15,22 +13,13 @@ export default [
         component: FamilyComponent,
         children: [
             {
-                path: '',
+                path: 'list',
                 component: FamilyListComponent,
-                // resolve: {
-                //     items: FamilyItemsResolver
-                // },
-                children: [
-                    {
-                        path: ':id',
-                        component: FamilyDetailsComponent,
-                        // resolve: {
-                        //     item: FamilyItemResolver
-                        // },
-                        canDeactivate: [CanDeactivateFamilyDetails]
-                    }
-                ]
-            }
+            },
+            // {
+            //     path: ':id',
+            //     component: FamilyDetailsComponent
+            // }
         ]
     }
 ] as Routes;
