@@ -14,6 +14,11 @@ export class AuthenicationService {
     constructor(private _auth: AuthService) {
     }
 
+    
+    public get accessToken() : string {
+        return 'Basic dXNlcjpwYXNzd29yZA=='
+    }    
+
     public logout() {
         this._auth.logout({
             logoutParams: {

@@ -37,7 +37,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseNavigationService: FuseNavigationService,
         private _translocoService: TranslocoService
-    ) {}
+    ) { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -63,13 +63,14 @@ export class LanguagesComponent implements OnInit, OnDestroy {
         this.flagCodes = {
             en: 'us',
             tr: 'tr',
+            mal: 'mal'
         };
     }
 
     /**
      * On destroy
      */
-    ngOnDestroy(): void {}
+    ngOnDestroy(): void { }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods

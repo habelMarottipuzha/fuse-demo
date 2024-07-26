@@ -109,6 +109,10 @@ export const appConfig: ApplicationConfig = {
                         id: 'tr',
                         label: 'Turkish',
                     },
+                    {
+                        id: 'mal',
+                        label: 'Malayalam',
+                    },
                 ],
                 defaultLang: 'en',
                 fallbackLang: 'en',

@@ -7,6 +7,7 @@ import {
 import { inject } from '@angular/core';
 import { AuthService } from 'app/core/auth/auth.service';
 import { AuthUtils } from 'app/core/auth/auth.utils';
+import { AuthenicationService } from 'app/shared/services/auth-service';
 import { Observable, catchError, throwError } from 'rxjs';
 
 /**
@@ -20,6 +21,7 @@ export const authInterceptor = (
     next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
     const authService = inject(AuthService);
+    const auth0 = inject(AuthenicationService);
 
     // Clone the request object
     let newReq = req.clone();
@@ -32,18 +34,18 @@ export const authInterceptor = (
     // for the protected API routes which our response interceptor will
     // catch and delete the access token from the local storage while logging
     // the user out from the app.
-    if (
-        authService.accessToken &&
-        !AuthUtils.isTokenExpired(authService.accessToken)
-    ) {
-        const detectedType = req.detectContentTypeHeader();
-        newReq = req.clone({
-            headers: req.headers.set(
-                'Authorization',
-                'Basic dXNlcjpwYXNzd29yZA=='
-            )
-        });
-    }
+    // if (
+    //     authService.accessToken &&
+    //     !AuthUtils.isTokenExpired(authService.accessToken)
+    // ) {
+    // const detectedType = req.detectContentTypeHeader();
+    newReq = req.clone({
+        headers: req.headers.set(
+            'Authorization',
+            auth0.accessToken
+        )
+    });
+    // }
 
     // Response
     return next(newReq).pipe(
@@ -51,10 +53,12 @@ export const authInterceptor = (
             // Catch "401 Unauthorized" responses
             if (error instanceof HttpErrorResponse && error.status === 401) {
                 // Sign out
-                authService.signOut();
+                // authService.signOut();
 
                 // Reload the app
-                location.reload();
+                // location.reload();
+
+                auth0.logout()
             }
 
             return throwError(error);
