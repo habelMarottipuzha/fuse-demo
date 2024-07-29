@@ -15,6 +15,7 @@ import { GetMemberDto } from 'app/modal/member/get-member.dto';
 import { PageableResponse } from 'app/modal/pagable-response.dto';
 import { MemberHeadingWidgetComponent } from 'app/shared/components/member-heading-widget/member-heading-widget.component';
 import { MemberListWidgetComponent } from 'app/shared/components/member-list-widget/member-list-widget.component';
+import { MemberType } from 'app/modal/member/member-enum';
 
 @Component({
     selector: 'app-family-list',
@@ -55,7 +56,9 @@ export class FamilyListComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        this._memberService.getMembers().subscribe();
+        this._memberService.getMembers({
+            type: MemberType.MEMBER
+        }).subscribe();
         this.members$ = this._memberService.members$;
 
         // Subscribe to search input field value changes

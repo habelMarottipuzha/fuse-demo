@@ -23,10 +23,10 @@
                 <form [formGroup]="createPostForm" (ngSubmit)="onSubmit()">
 
                     <div class="flex items-center justify-between">
-                        <div class="text-xl font-semibold">Create Post</div>
+                        <div class="text-xl font-semibold">{{'post-list.post-create' | transloco}}</div>
                         <button [disabled]="viewHelper.submitting" type="submit"
                             class="px-3 mr-1 hidden sm:inline-flex float-right" color="primary" mat-flat-button>
-                            <span> &nbsp;&nbsp;Post&nbsp;&nbsp; </span>
+                            <span> &nbsp;&nbsp;{{'post-submit' | transloco}}&nbsp;&nbsp; </span>
                         </button>
                     </div>
                     @if (viewHelper.submitting) {

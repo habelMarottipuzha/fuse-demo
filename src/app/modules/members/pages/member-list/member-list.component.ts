@@ -15,6 +15,7 @@ import { PageableResponse } from 'app/modal/pagable-response.dto';
 import { GetMemberDto } from 'app/modal/member/get-member.dto';
 import { MemberListWidgetComponent } from 'app/shared/components/member-list-widget/member-list-widget.component';
 import { MemberHeadingWidgetComponent } from 'app/shared/components/member-heading-widget/member-heading-widget.component';
+import { MemberType } from 'app/modal/member/member-enum';
 
 @Component({
     selector: 'app-member-list',
@@ -44,7 +45,9 @@ export class MemberListComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-        this._memberService.getMembers().subscribe();
+        this._memberService.getMembers({
+            type: MemberType.MEMBER
+        }).subscribe();
         this.members$ = this._memberService.members$;
 
         // Subscribe to search input field value changes

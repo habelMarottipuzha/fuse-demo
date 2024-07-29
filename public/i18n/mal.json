@@ -2,5 +2,8 @@
     "welcome-back": "Welcome back",
     "Project": "Project",
     "Analytics": "Analytics",
-    "post-create":"Create Post"
+    "post-list": {
+        "post-create": "പോസ്റ്റ് ചേർക്കുക",
+        "post-submit": "Post"
+    }
 }

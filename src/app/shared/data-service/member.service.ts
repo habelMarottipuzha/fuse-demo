@@ -26,9 +26,9 @@ export class MemberService {
     /**
      * Get Members
      */
-    getMembers(query?: { [key: string]: any }): Observable<PageableResponse<GetMemberDto>> {
+    getMembers(query: { type: MemberType, [key: string]: any }): Observable<PageableResponse<GetMemberDto>> {
         const queryP = new URLSearchParams({
-            type: MemberType.MEMBER,
+            type: query.type,
             sort: JSON.stringify([{
                 direction: 'asc',
                 property: 'displayName'
